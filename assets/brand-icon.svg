@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-labelledby="title desc">
+  <title id="title">Raizes do Equilibrio</title>
+  <desc id="desc">Icone com sol, folha, rio e cidade.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f6dd8c"/>
+      <stop offset="100%" stop-color="#c66533"/>
+    </linearGradient>
+    <linearGradient id="leaf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8aca76"/>
+      <stop offset="100%" stop-color="#3f7b4c"/>
+    </linearGradient>
+    <linearGradient id="river" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8ed5d9"/>
+      <stop offset="100%" stop-color="#4f8f95"/>
+    </linearGradient>
+  </defs>
+  <rect width="128" height="128" rx="32" fill="#f8f2e6"/>
+  <rect x="10" y="10" width="108" height="108" rx="28" fill="url(#bg)"/>
+  <circle cx="90" cy="36" r="15" fill="#fff2bd" opacity="0.95"/>
+  <path d="M14 92c18-16 34-24 51-24 18 0 31 6 49 20v16H14Z" fill="#4e7e45"/>
+  <path d="M14 96c20-10 36-14 50-14 14 0 31 6 50 18v18H14Z" fill="#335a37"/>
+  <path d="M66 52c0-14 15-24 27-24-1 15-10 30-27 36-10-5-15-16-15-27 0-9 5-18 13-23 1 15 3 26 2 38Z" fill="url(#leaf)"/>
+  <path d="M70 70c8 2 21 8 30 22-17 2-33 0-48-4 4-9 9-15 18-18Z" fill="#dff0d8" opacity="0.8"/>
+  <path d="M16 116c16-26 34-40 52-46 9 4 15 10 21 18-13 4-25 11-36 22-8 1-22 3-37 6Z" fill="url(#river)" opacity="0.95"/>
+  <rect x="86" y="76" width="8" height="26" rx="2" fill="#fef8e7"/>
+  <rect x="98" y="68" width="10" height="34" rx="2" fill="#fef8e7"/>
+  <rect x="109" y="61" width="7" height="41" rx="2" fill="#fef8e7"/>
+</svg>
