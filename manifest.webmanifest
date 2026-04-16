@@ -1,0 +1,19 @@
+{
+  "name": "Raizes do Equilibrio",
+  "short_name": "Raizes",
+  "description": "Projeto Agrinho 2026 sobre equilibrio entre producao e meio ambiente.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#f6efe2",
+  "theme_color": "#c66533",
+  "icons": [
+    {
+      "src": "./assets/brand-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

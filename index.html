@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#c66533">
+  <meta
+    name="description"
+    content="Raizes do Equilibrio e um site autoral sobre o tema Agro forte, futuro sustentavel: equilibrio entre producao e meio ambiente."
+  >
+  <title>Raizes do Equilibrio | Agrinho 2026</title>
+  <link rel="icon" href="./assets/brand-icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="site-shell">
+    <header class="hero" id="inicio" data-reveal>
+      <nav class="topbar" aria-label="Navegacao principal">
+        <a class="brand" href="#inicio">
+          <span class="brand-mark">R</span>
+          <span class="brand-text">
+            <strong>Raizes do Equilibrio</strong>
+            <small>Agrinho 2026</small>
+          </span>
+        </a>
+
+        <div class="topbar-links">
+          <a href="#visao">Visao</a>
+          <a href="#simulador">Simulador</a>
+          <a href="#rota">Rota</a>
+          <a href="#compromisso">Compromisso</a>
+        </div>
+
+        <button id="skyModeButton" class="button button-soft" type="button">
+          Alternar paisagem
+        </button>
+      </nav>
+
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Concurso Agrinho 2026 | Programacao Front-End</p>
+          <h1>Agro forte, futuro sustentavel.</h1>
+          <p class="hero-lead">
+            Quando a producao respeita o solo, a agua, a biodiversidade e as pessoas,
+            o campo prospera e a cidade respira melhor. Este site traduz essa conexao
+            em uma experiencia viva, interativa e responsiva.
+          </p>
+
+          <div class="hero-actions">
+            <a class="button button-primary" href="#simulador">Explorar o simulador</a>
+            <button id="quoteButton" class="button button-outline" type="button">
+              Gerar mensagem do dia
+            </button>
+          </div>
+
+          <div class="hero-pills" aria-label="Destaques do projeto">
+            <span>HTML semantico</span>
+            <span>CSS responsivo</span>
+            <span>JavaScript no DOM</span>
+            <span>Sem frameworks</span>
+          </div>
+
+          <div class="hero-stats">
+            <article class="stat-card">
+              <span>Equilibrio ideal</span>
+              <strong>Solo vivo</strong>
+              <p>Producao com tecnologia, cuidado ambiental e valor humano.</p>
+            </article>
+            <article class="stat-card">
+              <span>Resultado coletivo</span>
+              <strong>Cidade mais consciente</strong>
+              <p>Alimentos melhores, menos desperdicio e mais conexao com a origem.</p>
+            </article>
+          </div>
+        </div>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="sky-glow"></div>
+          <div class="scene-card">
+            <div class="scene-sun"></div>
+            <div class="scene-cloud cloud-a"></div>
+            <div class="scene-cloud cloud-b"></div>
+            <div class="scene-hill hill-back"></div>
+            <div class="scene-hill hill-front"></div>
+            <div class="scene-river"></div>
+            <div class="scene-fields"></div>
+            <div class="scene-windmill">
+              <span class="windmill-stick"></span>
+              <span class="windmill-core"></span>
+              <span class="blade blade-a"></span>
+              <span class="blade blade-b"></span>
+              <span class="blade blade-c"></span>
+            </div>
+            <div class="scene-city">
+              <span class="building building-a"></span>
+              <span class="building building-b"></span>
+              <span class="building building-c"></span>
+              <span class="building building-d"></span>
+            </div>
+          </div>
+
+          <aside class="floating-card">
+            <p class="floating-label">Pulso do dia</p>
+            <strong id="dayMessageTitle">Manha de cuidado</strong>
+            <p id="dayMessageText">
+              Pequenas escolhas bem pensadas transformam cada etapa da cadeia produtiva.
+            </p>
+          </aside>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section intro-section" id="visao" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Visao do projeto</p>
+          <h2>Um futuro sustentavel nasce do equilibrio.</h2>
+          <p>
+            O agro se fortalece quando produz com inteligencia, respeita os limites da natureza
+            e cria pontes reais com quem consome. Aqui, cada bloco do site mostra que
+            sustentabilidade nao e freio: e estrategia de permanencia, inovacao e vida.
+          </p>
+        </div>
+
+        <div class="principles-grid">
+          <article class="principle-card">
+            <span class="principle-number">01</span>
+            <h3>Solo que continua produtivo</h3>
+            <p>
+              Rotacao de culturas, cobertura vegetal e monitoramento evitam desgaste e garantem
+              colheitas mais saudaveis ao longo do tempo.
+            </p>
+          </article>
+          <article class="principle-card">
+            <span class="principle-number">02</span>
+            <h3>Agua usada com precisao</h3>
+            <p>
+              Sensores, irrigacao planejada e protecao das nascentes reduzem desperdicio e aumentam
+              a eficiencia da propriedade.
+            </p>
+          </article>
+          <article class="principle-card">
+            <span class="principle-number">03</span>
+            <h3>Energia e tecnologia a favor da vida</h3>
+            <p>
+              Automacao, energia limpa e dados bem aplicados tornam a producao mais segura,
+              moderna e preparada para o futuro.
+            </p>
+          </article>
+          <article class="principle-card">
+            <span class="principle-number">04</span>
+            <h3>Cidade mais proxima da origem</h3>
+            <p>
+              Consumidores informados valorizam boas praticas, fortalecem produtores e reduzem
+              o ciclo do desperdicio entre a colheita e a mesa.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section simulator-section" id="simulador" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Simulador interativo</p>
+          <h2>Monte um cenario de equilibrio entre producao e meio ambiente.</h2>
+          <p>
+            Escolha estrategias sustentaveis, ajuste a intensidade do cuidado e veja como o site
+            responde no DOM com um indice de equilibrio, impactos positivos e uma leitura do cenario.
+          </p>
+        </div>
+
+        <div class="simulator-layout">
+          <form class="panel control-panel" id="impactForm">
+            <fieldset class="toggle-group">
+              <legend>Praticas prioritarias</legend>
+
+              <label class="toggle-card">
+                <input type="checkbox" name="strategy" value="irrigacao" checked>
+                <span class="toggle-copy">
+                  <strong>Irrigacao inteligente</strong>
+                  <small>Mais precisao no uso da agua e menos perda por excesso.</small>
+                </span>
+              </label>
+
+              <label class="toggle-card">
+                <input type="checkbox" name="strategy" value="energia" checked>
+                <span class="toggle-copy">
+                  <strong>Energia solar no campo</strong>
+                  <small>Mais autonomia, menos emissao e operacao mais eficiente.</small>
+                </span>
+              </label>
+
+              <label class="toggle-card">
+                <input type="checkbox" name="strategy" value="compostagem">
+                <span class="toggle-copy">
+                  <strong>Compostagem e reaproveitamento</strong>
+                  <small>Menos residuo e mais retorno organico para o solo.</small>
+                </span>
+              </label>
+
+              <label class="toggle-card">
+                <input type="checkbox" name="strategy" value="logistica" checked>
+                <span class="toggle-copy">
+                  <strong>Logistica consciente</strong>
+                  <small>Rotas curtas, menos desperdicio e alimento mais fresco.</small>
+                </span>
+              </label>
+            </fieldset>
+
+            <div class="range-block">
+              <label for="careRange">Intensidade do cuidado</label>
+              <input id="careRange" type="range" min="1" max="5" step="1" value="4">
+              <div class="range-meta">
+                <span>Basico</span>
+                <output id="careRangeValue" for="careRange">4</output>
+                <span>Avancado</span>
+              </div>
+            </div>
+
+            <label class="select-block" for="focusSelect">
+              <span>Foco do planejamento</span>
+              <select id="focusSelect" name="focus">
+                <option value="solo">Proteger o solo</option>
+                <option value="agua">Cuidar da agua</option>
+                <option value="energia">Fortalecer a energia limpa</option>
+                <option value="cidade">Aproximar campo e cidade</option>
+              </select>
+            </label>
+
+            <button id="resetScenarioButton" class="button button-outline full-width" type="button">
+              Recomecar simulacao
+            </button>
+          </form>
+
+          <div class="panel result-panel">
+            <div class="gauge-shell" id="balanceGauge">
+              <div class="gauge-core">
+                <span>Indice de equilibrio</span>
+                <strong id="balanceScore">0</strong>
+                <small id="balanceLevel">Aguardando leitura</small>
+              </div>
+            </div>
+
+            <div class="impact-grid">
+              <article class="impact-card">
+                <span>Agua preservada</span>
+                <strong id="waterMetric">0%</strong>
+              </article>
+              <article class="impact-card">
+                <span>Biodiversidade</span>
+                <strong id="biodiversityMetric">0%</strong>
+              </article>
+              <article class="impact-card">
+                <span>Forca economica</span>
+                <strong id="economyMetric">0%</strong>
+              </article>
+              <article class="impact-card">
+                <span>Beneficio urbano</span>
+                <strong id="cityMetric">0%</strong>
+              </article>
+            </div>
+
+            <p id="impactNarrative" class="impact-narrative" role="status" aria-live="polite">
+              Ative praticas e monte um cenario para ver o resultado.
+            </p>
+
+            <ul id="impactHighlights" class="impact-highlights" aria-label="Destaques do cenario"></ul>
+          </div>
+        </div>
+      </section>
+
+      <section class="section route-section" id="rota" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Rota da conexao</p>
+          <h2>Do campo ate a cidade, tudo esta ligado.</h2>
+          <p>
+            Um alimento sustentavel nao nasce pronto na prateleira. Ele percorre etapas que
+            dependem de cuidado ambiental, tecnologia e responsabilidade coletiva.
+          </p>
+        </div>
+
+        <ol class="route-grid">
+          <li class="route-card">
+            <strong>Semeadura consciente</strong>
+            <p>Escolha de sementes, preparo do solo e planejamento com menos impacto ambiental.</p>
+          </li>
+          <li class="route-card">
+            <strong>Manejo inteligente</strong>
+            <p>Monitoramento do clima, da agua e da saude das plantas para evitar excessos.</p>
+          </li>
+          <li class="route-card">
+            <strong>Colheita com valor</strong>
+            <p>Mais qualidade, menos perda e melhor uso do trabalho de quem produz.</p>
+          </li>
+          <li class="route-card">
+            <strong>Transporte responsavel</strong>
+            <p>Rotas mais eficientes, menos desperdicio e maior frescor ao chegar na cidade.</p>
+          </li>
+          <li class="route-card">
+            <strong>Consumo com consciencia</strong>
+            <p>Escolhas urbanas podem premiar boas praticas e inspirar novos ciclos no campo.</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="section ideas-section" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Inovacoes sustentaveis</p>
+          <h2>Quatro frentes que fortalecem o agro e o futuro.</h2>
+        </div>
+
+        <div class="ideas-grid">
+          <article class="idea-card tone-earth">
+            <h3>Solo regenerado</h3>
+            <p>
+              Praticas regenerativas mantem nutrientes, seguram a agua no solo e reduzem erosao,
+              o que preserva a capacidade produtiva da terra.
+            </p>
+          </article>
+          <article class="idea-card tone-sun">
+            <h3>Energia que volta em economia</h3>
+            <p>
+              Paineis solares, sensores e automacao ajudam a diminuir custos e tornam a gestao
+              mais precisa em diferentes etapas da producao.
+            </p>
+          </article>
+          <article class="idea-card tone-water">
+            <h3>Agua tratada como patrimonio</h3>
+            <p>
+              Cada gota economizada no campo significa resiliencia para a producao e protecao
+              dos ecossistemas ao redor.
+            </p>
+          </article>
+          <article class="idea-card tone-city">
+            <h3>Cidade que entende a origem</h3>
+            <p>
+              Quando o consumo reconhece o valor do manejo responsavel, toda a cadeia ganha:
+              produtor, ambiente e sociedade.
+            </p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section pledge-section" id="compromisso" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Compromisso pessoal</p>
+          <h2>Transforme a reflexao em uma mensagem de acao.</h2>
+          <p>
+            Preencha os campos, gere um manifesto autoral e guarde sua mensagem no mural local
+            do navegador.
+          </p>
+        </div>
+
+        <div class="pledge-layout">
+          <form class="panel pledge-form" id="pledgeForm">
+            <label for="personName">
+              <span>Seu nome</span>
+              <input id="personName" name="personName" type="text" maxlength="30" placeholder="Digite seu nome">
+            </label>
+
+            <label for="personRole">
+              <span>De onde voce fala?</span>
+              <select id="personRole" name="personRole">
+                <option value="estudante">Sou estudante</option>
+                <option value="campo">Falo a partir do campo</option>
+                <option value="cidade">Falo a partir da cidade</option>
+              </select>
+            </label>
+
+            <label for="personPriority">
+              <span>Qual prioridade voce quer defender?</span>
+              <select id="personPriority" name="personPriority">
+                <option value="agua">Uso inteligente da agua</option>
+                <option value="solo">Saude do solo</option>
+                <option value="energia">Energia limpa</option>
+                <option value="consumo">Consumo consciente</option>
+              </select>
+            </label>
+
+            <label for="personAction">
+              <span>Uma atitude que voce quer fortalecer</span>
+              <textarea
+                id="personAction"
+                name="personAction"
+                rows="4"
+                maxlength="180"
+                placeholder="Ex.: valorizar alimentos produzidos com responsabilidade e reduzir desperdicio."
+              ></textarea>
+            </label>
+
+            <button class="button button-primary full-width" type="submit">
+              Gerar manifesto
+            </button>
+          </form>
+
+          <div class="panel pledge-output">
+            <p class="output-label">Manifesto gerado</p>
+            <blockquote id="pledgePreview">
+              Seu manifesto vai aparecer aqui com uma mensagem personalizada sobre o futuro sustentavel.
+            </blockquote>
+            <div class="output-actions">
+              <button id="savePledgeButton" class="button button-soft" type="button">
+                Guardar no mural
+              </button>
+              <button id="clearPledgesButton" class="button button-outline" type="button">
+                Limpar mural
+              </button>
+            </div>
+            <p id="pledgeStatus" class="output-status" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div class="mural-head">
+          <h3>Mural de compromissos</h3>
+          <p>As mensagens ficam salvas localmente neste navegador para continuar a experiencia.</p>
+        </div>
+
+        <div id="pledgeWall" class="pledge-wall"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer" data-reveal>
+      <p>
+        Projeto autoral desenvolvido em HTML, CSS e JavaScript puros para a subcategoria 3 do
+        Concurso Agrinho 2026.
+      </p>
+      <div class="footer-tags">
+        <span>Repositorio publico</span>
+        <span>Sem frameworks</span>
+        <span>Layout responsivo</span>
+        <span>Experiencia interativa</span>
+      </div>
+    </footer>
+  </div>
+
+  <script src="./js/main.js" defer></script>
+</body>
+</html>
