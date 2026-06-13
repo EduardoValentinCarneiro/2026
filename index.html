@@ -6,71 +6,433 @@
   <meta name="theme-color" content="#c66533">
   <meta
     name="description"
-    content="Raizes do Equilibrio e um site autoral sobre o tema Agro forte, futuro sustentavel: equilibrio entre producao e meio ambiente."
+    content="Raiz Up é um site sobre o tema Agro forte, futuro sustentável: equilíbrio entre produção e meio ambiente."
   >
-  <title>Raizes do Equilibrio | Agrinho 2026</title>
-  <link rel="icon" href="./assets/brand-icon.svg" type="image/svg+xml">
-  <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css">
+  <title>Raiz Up | Agrinho 2026</title>
+  <link id="faviconLink" rel="icon" href="./img/favicon.png" type="image/png">
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
+  <a class="skip-link" href="#conteudo">Ir para o conteúdo principal</a>
+  <div id="achievementToastArea" class="achievement-toast-area" aria-live="assertive" aria-atomic="false"></div>
+
+  <!-- Raizes vivas: crescem conforme a rolagem e as escolhas sustentaveis do visitante. -->
+  <svg id="livingRoots" class="living-roots" viewBox="0 0 180 1000" preserveAspectRatio="none" aria-hidden="true">
+    <path id="rootMainPath" class="root-path root-path-main" pathLength="1" d="M42 0 C18 110 82 180 45 285 C12 380 96 438 52 548 C18 650 92 730 48 842 C30 895 51 950 40 1000"></path>
+    <path class="root-path root-path-branch root-branch-a" pathLength="1" d="M47 278 C82 248 111 250 143 213"></path>
+    <path class="root-path root-path-branch root-branch-b" pathLength="1" d="M52 548 C88 514 116 523 158 483"></path>
+    <path class="root-path root-path-branch root-branch-c" pathLength="1" d="M49 840 C88 808 121 818 159 774"></path>
+    <g class="root-life root-life-a"><ellipse cx="141" cy="212" rx="12" ry="6"></ellipse></g>
+    <g class="root-life root-life-b"><ellipse cx="156" cy="482" rx="12" ry="6"></ellipse></g>
+    <g class="root-life root-life-c"><circle cx="158" cy="774" r="7"></circle></g>
+  </svg>
+
+  <!-- Atalhos rapidos: controla musica, sons da natureza, leitura do resumo e volta ao topo. -->
+  <div id="quickDock" class="quick-dock" aria-label="Atalhos rapidos do site">
+    <div id="quickDockPanel" class="quick-dock-panel" aria-hidden="true" inert>
+      <section class="quick-card quick-card-music" aria-label="Controles rápidos da música">
+        <div class="quick-card-head">
+          <span class="quick-card-icon" aria-hidden="true">M</span>
+          <div>
+            <strong>Música</strong>
+            <small id="quickMusicStatus">Faixa 1/1</small>
+          </div>
+        </div>
+        <div class="quick-control-row">
+          <button id="quickMusicPrevButton" class="quick-mini-button" type="button" aria-label="Voltar música">&lt;</button>
+          <button id="quickMusicToggleButton" class="quick-mini-button quick-main-action" type="button" aria-label="Tocar música">Play</button>
+          <button id="quickMusicNextButton" class="quick-mini-button" type="button" aria-label="Passar música">&gt;</button>
+        </div>
+      </section>
+
+      <section class="quick-card quick-card-nature" aria-label="Controles rápidos dos sons da natureza">
+        <div class="quick-card-head">
+          <span class="quick-card-icon" aria-hidden="true">N</span>
+          <div>
+            <strong>Natureza</strong>
+            <small id="quickAmbientStatus">Bosque</small>
+          </div>
+        </div>
+        <div class="quick-control-row">
+          <button id="quickAmbientPrevButton" class="quick-mini-button" type="button" aria-label="Voltar som da natureza">&lt;</button>
+          <button id="quickAmbientToggleButton" class="quick-mini-button quick-main-action" type="button" aria-label="Ativar sons da natureza">Play</button>
+          <button id="quickAmbientNextButton" class="quick-mini-button" type="button" aria-label="Passar som da natureza">&gt;</button>
+        </div>
+      </section>
+
+      <section class="quick-card quick-card-reader" aria-label="Leitura rápida do resumo">
+        <div class="quick-card-head">
+          <span class="quick-card-icon" aria-hidden="true">R</span>
+          <div>
+            <strong>Resumo</strong>
+            <small id="quickReaderStatus">Leitura pronta</small>
+          </div>
+        </div>
+        <div class="quick-control-row">
+          <button id="quickReaderButton" class="quick-mini-button quick-main-action" type="button" aria-label="Ler resumo do site">Ler</button>
+          <button id="quickReaderStopButton" class="quick-mini-button" type="button" aria-label="Parar leitura do resumo">Parar</button>
+        </div>
+      </section>
+
+      <div class="quick-dock-bottom">
+        <button id="quickTopButton" class="quick-top-button" type="button" aria-label="Voltar para o topo da página">
+          <span aria-hidden="true">^</span>
+          Topo
+        </button>
+        <div class="quick-xp-card" aria-label="Conquistas desbloqueadas">
+          <span>XP</span>
+          <strong id="quickAchievementCount">0/0</strong>
+        </div>
+      </div>
+    </div>
+
+    <button
+      id="quickDockToggleButton"
+      class="quick-dock-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="quickDockPanel"
+      aria-label="Abrir atalhos rapidos"
+    >
+      <span class="quick-toggle-glow" aria-hidden="true"></span>
+      <span class="quick-toggle-symbol" aria-hidden="true">
+        <svg viewBox="0 0 32 32" focusable="false">
+          <path d="M16 8 7 18.5h5.6V25h6.8v-6.5H25L16 8Z"></path>
+        </svg>
+      </span>
+      <span class="quick-equalizer" aria-hidden="true">
+        <i></i>
+        <i></i>
+        <i></i>
+      </span>
+    </button>
+  </div>
+
+  <!-- Janela do quiz: mostra perguntas, progresso, explicacao e pontuacao final. -->
+  <div id="quizModalOverlay" class="quiz-modal-overlay" hidden></div>
+  <section id="quizModal" class="quiz-modal" role="dialog" aria-modal="true" aria-hidden="true" aria-labelledby="quizModalTitle" hidden inert>
+    <div class="quiz-modal-card">
+      <div class="quiz-modal-head">
+        <div>
+          <p class="eyebrow">Quiz educativo</p>
+          <h2 id="quizModalTitle">Desafio do agro sustentável</h2>
+        </div>
+        <button id="quizCloseButton" class="settings-close" type="button" aria-label="Fechar janela do quiz">
+          Fechar
+        </button>
+      </div>
+
+      <div class="quiz-layout">
+        <div class="panel quiz-card">
+          <div class="quiz-progress" aria-hidden="true">
+            <span id="quizProgressFill"></span>
+          </div>
+          <p id="quizCounter" class="output-label">Pergunta 1 de 6</p>
+          <h3 id="quizQuestion">Qual pratica ajuda a preservar o solo?</h3>
+          <div id="quizOptions" class="quiz-options"></div>
+          <p id="quizFeedback" class="quiz-feedback" aria-live="polite"></p>
+          <div class="quiz-actions">
+            <button id="quizNextButton" class="button button-primary" type="button" disabled aria-label="Avancar no quiz">
+              Proxima pergunta
+            </button>
+            <button id="quizRestartButton" class="button button-outline" type="button" aria-label="Recomeçar quiz educativo">
+              Recomeçar quiz
+            </button>
+          </div>
+        </div>
+
+        <aside class="panel quiz-result-panel">
+          <p class="output-label">Resultado</p>
+          <strong id="quizScoreValue">0/6</strong>
+          <p id="quizResultText">Responda as perguntas para ver seu desempenho.</p>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tour guiado: apresenta as principais partes do site com um personagem e rolagem automatica. -->
+  <div id="tourWind" class="tour-wind" aria-hidden="true">
+    <span class="wind-leaf leaf-1"></span>
+    <span class="wind-leaf leaf-2"></span>
+    <span class="wind-leaf leaf-3"></span>
+    <span class="wind-leaf leaf-4"></span>
+    <span class="wind-leaf leaf-5"></span>
+    <span class="wind-leaf leaf-6"></span>
+    <span class="wind-leaf leaf-7"></span>
+    <span class="wind-leaf leaf-8"></span>
+    <span class="wind-leaf leaf-9"></span>
+    <span class="wind-leaf leaf-10"></span>
+    <span class="wind-leaf leaf-11"></span>
+    <span class="wind-leaf leaf-12"></span>
+    <span class="wind-leaf leaf-13"></span>
+    <span class="wind-leaf leaf-14"></span>
+    <span class="wind-leaf leaf-15"></span>
+    <span class="wind-leaf leaf-16"></span>
+  </div>
+
+  <section
+    id="siteTour"
+    class="site-tour"
+    role="dialog"
+    aria-modal="false"
+    aria-hidden="true"
+    aria-labelledby="tourTitle"
+    hidden
+    inert
+  >
+    <audio id="tourAudio" preload="metadata"></audio>
+
+    <button id="tourCloseButton" class="tour-close" type="button" aria-label="Fechar apresentação guiada">
+      Fechar
+    </button>
+
+    <div id="tourCharacter" class="tour-character" aria-hidden="true">
+      <span class="character-shadow"></span>
+      <span class="character-leaf character-leaf-left"></span>
+      <span class="character-leaf character-leaf-right"></span>
+      <span class="character-arm character-arm-left"></span>
+      <span class="character-body"></span>
+      <span class="character-arm character-arm-right"></span>
+      <span class="character-head">
+        <i class="character-eye character-eye-left"></i>
+        <i class="character-eye character-eye-right"></i>
+        <i class="character-mouth"></i>
+      </span>
+    </div>
+
+    <div class="tour-copy">
+      <p id="tourCounter" class="tour-counter">Raizinho apresenta | 1 de 8</p>
+      <h2 id="tourTitle">Bem-vindo ao Raiz Up!</h2>
+      <p id="tourText" aria-live="polite">
+        Vou conduzir você pelos pontos principais e mostrar como campo, cidade e natureza se conectam.
+      </p>
+      <div class="tour-progress" aria-hidden="true">
+        <span id="tourProgressFill"></span>
+      </div>
+      <div class="tour-controls">
+        <button id="tourPreviousButton" class="tour-control" type="button" aria-label="Voltar etapa da apresentação">
+          Voltar
+        </button>
+        <button id="tourAutoButton" class="tour-control" type="button" aria-pressed="true" aria-label="Pausar apresentação automática">
+          Pausar
+        </button>
+        <button id="tourVoiceButton" class="tour-control" type="button" aria-pressed="true" aria-label="Silenciar áudio gravado da apresentação">
+          Silenciar
+        </button>
+        <button id="tourNextButton" class="tour-control tour-control-primary" type="button" aria-label="Avançar etapa da apresentação">
+          Próximo
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Semente Viva: resume o progresso da jornada e muda conforme as escolhas do simulador. -->
+  <aside id="seedCompanion" class="seed-companion" data-stage="0" data-variant="solo" aria-label="Progresso da Semente Viva">
+    <a class="seed-companion-link" href="#laboratorio-vivo" aria-label="Abrir laboratório da Semente Viva">
+      <span class="seed-pot" aria-hidden="true">
+        <span class="seed-soil"></span>
+        <span class="living-seed"></span>
+        <span class="living-stem"></span>
+        <span class="living-leaf living-leaf-left"></span>
+        <span class="living-leaf living-leaf-right"></span>
+        <span class="living-leaf living-leaf-top"></span>
+        <span class="living-bloom"><i></i></span>
+      </span>
+      <span class="seed-copy">
+        <small>Semente Viva</small>
+        <strong id="seedStageLabel">Semente adormecida</strong>
+        <span class="seed-progress" aria-hidden="true"><i id="seedProgressFill"></i></span>
+        <span id="seedProgressText">0 de 7 experiências</span>
+      </span>
+    </a>
+  </aside>
+
+  <!-- Estrutura principal: reune cabecalho, secoes educativas e footer do projeto. -->
   <div class="site-shell">
+    <!-- Cabecalho: apresenta marca, navegacao, chamada inicial e configuracoes. -->
     <header class="hero" id="inicio" data-reveal>
       <nav class="topbar" aria-label="Navegacao principal">
         <a class="brand" href="#inicio">
-          <span class="brand-mark">R</span>
+          <span class="brand-mark">
+            <img id="brandMarkImage" src="./img/favicon.png" alt="" aria-hidden="true">
+          </span>
           <span class="brand-text">
-            <strong>Raizes do Equilibrio</strong>
+            <strong>Raiz Up</strong>
             <small>Agrinho 2026</small>
           </span>
         </a>
 
         <div class="topbar-links">
-          <a href="#visao">Visao</a>
+          <a href="#visao">Visão</a>
+          <a href="#galeria">Galeria</a>
           <a href="#simulador">Simulador</a>
+          <a href="#dados">Dados</a>
           <a href="#rota">Rota</a>
+          <a href="#painel">Painel</a>
+          <a href="#quiz">Quiz</a>
+          <a href="#parana">Paraná</a>
           <a href="#compromisso">Compromisso</a>
         </div>
 
-        <button id="skyModeButton" class="button button-soft" type="button">
-          Alternar paisagem
+        <button
+          id="settingsToggleButton"
+          class="button button-soft"
+          type="button"
+          aria-expanded="false"
+          aria-controls="settingsPanel"
+          aria-label="Abrir menu de configuração"
+        >
+          Menu
         </button>
       </nav>
 
+      <div id="settingsOverlay" class="settings-overlay" hidden></div>
+
+      <aside id="settingsPanel" class="settings-panel" aria-hidden="true" hidden>
+        <div class="settings-head">
+          <div>
+            <p class="eyebrow">Menu de configuração</p>
+            <h2>Personalize a experiência</h2>
+          </div>
+          <button id="settingsCloseButton" class="settings-close" type="button" aria-label="Fechar menu">
+            Fechar
+          </button>
+        </div>
+
+        <section class="settings-block">
+          <h3>Tema da página</h3>
+          <div class="theme-switcher">
+            <button class="theme-choice is-active" type="button" data-theme-choice="day" aria-pressed="true" aria-label="Ativar tema claro">
+              Claro
+            </button>
+            <button class="theme-choice" type="button" data-theme-choice="night" aria-pressed="false" aria-label="Ativar tema escuro">
+              Escuro
+            </button>
+          </div>
+        </section>
+
+        <section class="settings-block">
+          <h3>Trilha sonora</h3>
+          <audio id="themeAudio" loop preload="none">
+            <source src="musica/musica1.mp3" type="audio/mpeg">
+          </audio>
+          <div class="quick-control-row settings-control-row">
+            <button id="audioPrevButton" class="quick-mini-button" type="button" aria-label="Voltar música">
+              &lt;
+            </button>
+            <button id="audioToggleButton" class="quick-mini-button quick-main-action" type="button" aria-label="Tocar música do site">
+              Play
+            </button>
+            <button id="audioNextButton" class="quick-mini-button" type="button" aria-label="Passar música">
+              &gt;
+            </button>
+          </div>
+          <label class="range-block settings-range" for="audioVolumeRange">
+            <span>Volume da trilha</span>
+            <input id="audioVolumeRange" type="range" min="0" max="100" step="1" value="15">
+          </label>
+          <p id="audioStatus" class="settings-note">
+            Faixa 1 de 3 pronta para tocar.
+          </p>
+        </section>
+
+        <section class="settings-block">
+          <h3>Sons ambientais</h3>
+          <audio id="ambientAudio" loop preload="none">
+            <source src="musica/bosque.mp3" type="audio/mpeg">
+          </audio>
+          <div class="quick-control-row settings-control-row">
+            <button id="ambientPrevButton" class="quick-mini-button" type="button" aria-label="Voltar som da natureza">
+              &lt;
+            </button>
+            <button id="ambientToggleButton" class="quick-mini-button quick-main-action" type="button" aria-label="Ativar sons ambientais">
+              Play
+            </button>
+            <button id="ambientNextButton" class="quick-mini-button" type="button" aria-label="Passar som da natureza">
+              &gt;
+            </button>
+          </div>
+          <label class="range-block settings-range" for="ambientVolumeRange">
+            <span>Volume do ambiente</span>
+            <input id="ambientVolumeRange" type="range" min="0" max="100" step="1" value="15">
+          </label>
+          <p id="ambientStatus" class="settings-note">
+            Bosque, chuva e vento podem ser ativados para aumentar a imersão.
+          </p>
+        </section>
+
+        <section class="settings-block">
+          <h3>Acessibilidade</h3>
+          <div class="settings-actions compact-actions">
+            <button id="fontDecreaseButton" class="button button-outline" type="button" aria-label="Diminuir tamanho da fonte">
+              A-
+            </button>
+            <button id="fontResetButton" class="button button-soft" type="button" aria-label="Restaurar tamanho da fonte">
+              A
+            </button>
+            <button id="fontIncreaseButton" class="button button-outline" type="button" aria-label="Aumentar tamanho da fonte">
+              A+
+            </button>
+          </div>
+          <div class="settings-actions">
+            <button id="readerButton" class="button button-primary" type="button" aria-label="Ler resumo do site em voz alta">
+              Ler resumo
+            </button>
+            <button id="readerStopButton" class="button button-soft" type="button" aria-label="Parar leitura do resumo">
+              Parar leitura
+            </button>
+            <button id="readingModeButton" class="button button-outline" type="button" aria-pressed="false" aria-label="Ativar modo leitura">
+              Modo leitura
+            </button>
+          </div>
+          <p id="readerStatus" class="settings-note" aria-live="polite">
+            Recursos de leitura e fonte ajudam a navegar com mais conforto.
+          </p>
+        </section>
+
+        <section class="settings-block">
+          <h3>Conquistas</h3>
+          <div id="achievementList" class="achievement-list" aria-live="polite"></div>
+        </section>
+      </aside>
+
       <div class="hero-grid">
         <div class="hero-copy">
-          <p class="eyebrow">Concurso Agrinho 2026 | Programacao Front-End</p>
-          <h1>Agro forte, futuro sustentavel.</h1>
+          <p class="eyebrow">Concurso Agrinho 2026 | Programação Front-End</p>
+          <h1>Agro forte, futuro sustentável.</h1>
           <p class="hero-lead">
-            Quando a producao respeita o solo, a agua, a biodiversidade e as pessoas,
-            o campo prospera e a cidade respira melhor. Este site traduz essa conexao
-            em uma experiencia viva, interativa e responsiva.
+            Quando a produção respeita o solo, a água, a biodiversidade e as pessoas,
+            o campo prospera e a cidade respira melhor. Este site traduz essa conexão
+            em uma experiência viva, interativa e responsiva.
           </p>
 
           <div class="hero-actions">
             <a class="button button-primary" href="#simulador">Explorar o simulador</a>
-            <button id="quoteButton" class="button button-outline" type="button">
+            <button id="quoteButton" class="button button-outline" type="button" aria-label="Gerar mensagem inspiradora do dia">
               Gerar mensagem do dia
             </button>
-          </div>
-
-          <div class="hero-pills" aria-label="Destaques do projeto">
-            <span>HTML semantico</span>
-            <span>CSS responsivo</span>
-            <span>JavaScript no DOM</span>
-            <span>Sem frameworks</span>
+            <button
+              id="tourStartButton"
+              class="button button-soft tour-start-button"
+              type="button"
+              aria-label="Ver apresentação guiada do site"
+              aria-controls="siteTour"
+              aria-expanded="false"
+            >
+              Ver resumo
+            </button>
           </div>
 
           <div class="hero-stats">
             <article class="stat-card">
-              <span>Equilibrio ideal</span>
+              <span>Equilíbrio ideal</span>
               <strong>Solo vivo</strong>
-              <p>Producao com tecnologia, cuidado ambiental e valor humano.</p>
+              <p>Produção com tecnologia, cuidado ambiental e valor humano.</p>
             </article>
             <article class="stat-card">
               <span>Resultado coletivo</span>
               <strong>Cidade mais consciente</strong>
-              <p>Alimentos melhores, menos desperdicio e mais conexao com a origem.</p>
+              <p>Alimentos melhores, menos desperdício e mais conexão com a origem.</p>
             </article>
           </div>
         </div>
@@ -111,15 +473,16 @@
       </div>
     </header>
 
-    <main>
+    <main id="conteudo">
+      <!-- Visao geral: explica a ideia central do equilibrio entre producao e meio ambiente. -->
       <section class="section intro-section" id="visao" data-reveal>
         <div class="section-heading">
-          <p class="eyebrow">Visao do projeto</p>
-          <h2>Um futuro sustentavel nasce do equilibrio.</h2>
+          <p class="eyebrow">Visão do projeto</p>
+          <h2>Um futuro sustentável nasce do equilíbrio.</h2>
           <p>
-            O agro se fortalece quando produz com inteligencia, respeita os limites da natureza
+            O agro se fortalece quando produz com inteligência, respeita os limites da natureza
             e cria pontes reais com quem consome. Aqui, cada bloco do site mostra que
-            sustentabilidade nao e freio: e estrategia de permanencia, inovacao e vida.
+            sustentabilidade não é freio: é estratégia de permanência, inovação e vida.
           </p>
         </div>
 
@@ -128,57 +491,174 @@
             <span class="principle-number">01</span>
             <h3>Solo que continua produtivo</h3>
             <p>
-              Rotacao de culturas, cobertura vegetal e monitoramento evitam desgaste e garantem
-              colheitas mais saudaveis ao longo do tempo.
+              Rotação de culturas, cobertura vegetal e monitoramento evitam desgaste e garantem
+              colheitas mais saudáveis ao longo do tempo.
             </p>
           </article>
           <article class="principle-card">
             <span class="principle-number">02</span>
-            <h3>Agua usada com precisao</h3>
+            <h3>Água usada com precisão</h3>
             <p>
-              Sensores, irrigacao planejada e protecao das nascentes reduzem desperdicio e aumentam
-              a eficiencia da propriedade.
+              Sensores, irrigação planejada e proteção das nascentes reduzem desperdício e aumentam
+              a eficiência da propriedade.
             </p>
           </article>
           <article class="principle-card">
             <span class="principle-number">03</span>
             <h3>Energia e tecnologia a favor da vida</h3>
             <p>
-              Automacao, energia limpa e dados bem aplicados tornam a producao mais segura,
+              Automação, energia limpa e dados bem aplicados tornam a produção mais segura,
               moderna e preparada para o futuro.
             </p>
           </article>
           <article class="principle-card">
             <span class="principle-number">04</span>
-            <h3>Cidade mais proxima da origem</h3>
+            <h3>Cidade mais próxima da origem</h3>
             <p>
-              Consumidores informados valorizam boas praticas, fortalecem produtores e reduzem
-              o ciclo do desperdicio entre a colheita e a mesa.
+              Consumidores informados valorizam boas práticas, fortalecem produtores e reduzem
+              o ciclo do desperdício entre a colheita e a mesa.
             </p>
           </article>
         </div>
       </section>
 
+      <!-- Laboratorio vivo: plantio por sopro, movimento do aparelho e som espacial. -->
+      <section class="section living-lab-section" id="laboratorio-vivo" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Laboratório vivo</p>
+          <h2>Faça o site reagir ao seu corpo e às suas escolhas.</h2>
+          <p>
+            Plante pelo sopro, incline o celular e mova os sons da natureza. Todos os recursos
+            possuem controles alternativos e só usam sensores quando você permite.
+          </p>
+        </div>
+
+        <div class="living-lab-grid">
+          <article class="panel lab-card blow-card">
+            <div class="lab-card-head">
+              <span class="lab-number">01</span>
+              <div>
+                <h3>Assopre para plantar</h3>
+                <p>O microfone percebe apenas a intensidade do sopro; nenhum áudio é gravado.</p>
+              </div>
+            </div>
+            <div id="seedField" class="seed-field" aria-label="Campo onde as sementes serão plantadas">
+              <span class="field-sun"></span>
+              <span class="field-cloud"></span>
+              <span class="field-ground"></span>
+            </div>
+            <div class="blow-meter" aria-hidden="true"><span id="blowMeterFill"></span></div>
+            <div class="lab-actions">
+              <button id="blowStartButton" class="button button-primary" type="button">Ativar sopro</button>
+              <button id="plantFallbackButton" class="button button-outline" type="button">Plantar sem microfone</button>
+            </div>
+            <p id="blowStatus" class="lab-status" aria-live="polite">Pronto para receber novas sementes.</p>
+          </article>
+
+          <article class="panel lab-card motion-card">
+            <div class="lab-card-head">
+              <span class="lab-number">02</span>
+              <div>
+                <h3>Experiência pelo movimento</h3>
+                <p>Incline o celular para deslocar nuvens, água, folhas e sementes pela paisagem.</p>
+              </div>
+            </div>
+            <div class="motion-preview" aria-hidden="true">
+              <span class="motion-sun"></span>
+              <span class="motion-cloud motion-cloud-a"></span>
+              <span class="motion-cloud motion-cloud-b"></span>
+              <span class="motion-hill"></span>
+              <span class="motion-drop"></span>
+              <span class="motion-seed"></span>
+            </div>
+            <button id="motionToggleButton" class="button button-soft full-width" type="button" aria-pressed="false">
+              Ativar movimento
+            </button>
+            <p id="motionStatus" class="lab-status" aria-live="polite">No computador, mova o cursor para experimentar.</p>
+          </article>
+
+          <article class="panel lab-card spatial-card">
+            <audio id="spatialNatureAudio" src="musica/bosque.mp3" loop preload="metadata"></audio>
+            <div class="lab-card-head">
+              <span class="lab-number">03</span>
+              <div>
+                <h3>Natureza em som espacial</h3>
+                <p>O bosque acompanha o cursor ou a inclinação, como se pássaros e água estivessem ao redor.</p>
+              </div>
+            </div>
+            <div class="spatial-visual" aria-hidden="true">
+              <span class="spatial-listener"></span>
+              <span class="spatial-wave wave-left"></span>
+              <span class="spatial-wave wave-right"></span>
+              <span id="spatialPanDot" class="spatial-pan-dot"></span>
+            </div>
+            <button id="spatialAudioButton" class="button button-soft full-width" type="button" aria-pressed="false">
+              Ativar som espacial
+            </button>
+            <p id="spatialStatus" class="lab-status" aria-live="polite">Use fones de ouvido para perceber melhor o movimento.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Galeria: mostra imagens relacionadas ao campo, agua, cidade e producao. -->
+      <section class="section gallery-section" id="galeria" data-reveal>
+        <div class="section-heading">
+          <h2>Imagens do campo, da água, da cidade e da produção.</h2>
+        </div>
+
+        <div class="gallery-grid">
+          <figure class="photo-card">
+            <img src="./img/Plantacao da regiao.jpg" alt="Foto de plantação da região">
+            <figcaption>
+              <strong>Plantação da região</strong>
+              <span>Mostra o cultivo local e a importância do cuidado com o solo.</span>
+            </figcaption>
+          </figure>
+          <figure class="photo-card">
+            <img src="./img/Cidade proxima.jpg" alt="Foto de cidade próxima ao campo">
+            <figcaption>
+              <strong>Cidade próxima</strong>
+              <span>Mostra como o alimento produzido no campo chega ao consumo urbano.</span>
+            </figcaption>
+          </figure>
+          <figure class="photo-card">
+            <img src="./img/Rio ou nascente.png" alt="Imagem de rio ou nascente preservada">
+            <figcaption>
+              <strong>Rio ou nascente</strong>
+              <span>Valoriza a água como patrimônio essencial para produzir e viver.</span>
+            </figcaption>
+          </figure>
+          <figure class="photo-card">
+            <img src="./img/Producao agricola.jpg" alt="Foto de produção agrícola">
+            <figcaption>
+              <strong>Produção agrícola</strong>
+              <span>Representa colheita, qualidade e trabalho de quem produz.</span>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <!-- Simulador interativo: calcula impactos conforme as praticas sustentaveis escolhidas. -->
       <section class="section simulator-section" id="simulador" data-reveal>
         <div class="section-heading">
           <p class="eyebrow">Simulador interativo</p>
-          <h2>Monte um cenario de equilibrio entre producao e meio ambiente.</h2>
+          <h2>Monte um cenário de equilíbrio entre produção e meio ambiente.</h2>
           <p>
-            Escolha estrategias sustentaveis, ajuste a intensidade do cuidado e veja como o site
-            responde no DOM com um indice de equilibrio, impactos positivos e uma leitura do cenario.
+            Escolha estratégias sustentáveis, ajuste a intensidade do cuidado e veja como o site
+            responde no DOM com um índice de equilíbrio, impactos positivos e uma leitura do cenário.
           </p>
         </div>
 
         <div class="simulator-layout">
           <form class="panel control-panel" id="impactForm">
             <fieldset class="toggle-group">
-              <legend>Praticas prioritarias</legend>
+              <legend>Práticas prioritárias</legend>
 
               <label class="toggle-card">
                 <input type="checkbox" name="strategy" value="irrigacao" checked>
                 <span class="toggle-copy">
-                  <strong>Irrigacao inteligente</strong>
-                  <small>Mais precisao no uso da agua e menos perda por excesso.</small>
+                  <strong>Irrigação inteligente</strong>
+                  <small>Mais precisão no uso da água e menos perda por excesso.</small>
                 </span>
               </label>
 
@@ -186,7 +666,7 @@
                 <input type="checkbox" name="strategy" value="energia" checked>
                 <span class="toggle-copy">
                   <strong>Energia solar no campo</strong>
-                  <small>Mais autonomia, menos emissao e operacao mais eficiente.</small>
+                  <small>Mais autonomia, menos emissão e operação mais eficiente.</small>
                 </span>
               </label>
 
@@ -194,15 +674,15 @@
                 <input type="checkbox" name="strategy" value="compostagem">
                 <span class="toggle-copy">
                   <strong>Compostagem e reaproveitamento</strong>
-                  <small>Menos residuo e mais retorno organico para o solo.</small>
+                  <small>Menos resíduo e mais retorno orgânico para o solo.</small>
                 </span>
               </label>
 
               <label class="toggle-card">
                 <input type="checkbox" name="strategy" value="logistica" checked>
                 <span class="toggle-copy">
-                  <strong>Logistica consciente</strong>
-                  <small>Rotas curtas, menos desperdicio e alimento mais fresco.</small>
+                  <strong>Logística consciente</strong>
+                  <small>Rotas curtas, menos desperdício e alimento mais fresco.</small>
                 </span>
               </label>
             </fieldset>
@@ -211,9 +691,9 @@
               <label for="careRange">Intensidade do cuidado</label>
               <input id="careRange" type="range" min="1" max="5" step="1" value="4">
               <div class="range-meta">
-                <span>Basico</span>
+                <span>Básico</span>
                 <output id="careRangeValue" for="careRange">4</output>
-                <span>Avancado</span>
+                <span>Avançado</span>
               </div>
             </div>
 
@@ -221,21 +701,21 @@
               <span>Foco do planejamento</span>
               <select id="focusSelect" name="focus">
                 <option value="solo">Proteger o solo</option>
-                <option value="agua">Cuidar da agua</option>
+                <option value="agua">Cuidar da água</option>
                 <option value="energia">Fortalecer a energia limpa</option>
                 <option value="cidade">Aproximar campo e cidade</option>
               </select>
             </label>
 
-            <button id="resetScenarioButton" class="button button-outline full-width" type="button">
-              Recomecar simulacao
+            <button id="resetScenarioButton" class="button button-outline full-width" type="button" aria-label="Recomeçar simulação de equilíbrio">
+              Recomeçar simulação
             </button>
           </form>
 
           <div class="panel result-panel">
             <div class="gauge-shell" id="balanceGauge">
               <div class="gauge-core">
-                <span>Indice de equilibrio</span>
+                <span>Índice de equilíbrio</span>
                 <strong id="balanceScore">0</strong>
                 <small id="balanceLevel">Aguardando leitura</small>
               </div>
@@ -243,7 +723,7 @@
 
             <div class="impact-grid">
               <article class="impact-card">
-                <span>Agua preservada</span>
+                <span>Água preservada</span>
                 <strong id="waterMetric">0%</strong>
               </article>
               <article class="impact-card">
@@ -251,7 +731,7 @@
                 <strong id="biodiversityMetric">0%</strong>
               </article>
               <article class="impact-card">
-                <span>Forca economica</span>
+                <span>Força econômica</span>
                 <strong id="economyMetric">0%</strong>
               </article>
               <article class="impact-card">
@@ -261,20 +741,107 @@
             </div>
 
             <p id="impactNarrative" class="impact-narrative" role="status" aria-live="polite">
-              Ative praticas e monte um cenario para ver o resultado.
+              Ative práticas e monte um cenário para ver o resultado.
             </p>
 
-            <ul id="impactHighlights" class="impact-highlights" aria-label="Destaques do cenario"></ul>
+            <ul id="impactHighlights" class="impact-highlights" aria-label="Destaques do cenário"></ul>
           </div>
         </div>
       </section>
 
+      <!-- Dois futuros: compara visualmente as consequencias do cenario montado no simulador. -->
+      <section class="section futures-section" id="dois-futuros" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Dois futuros possíveis</p>
+          <h2>Arraste a linha e compare o Paraná de 2040.</h2>
+          <p>
+            O lado esquerdo mostra as consequências do desperdício e do solo desprotegido.
+            O lado direito reage ao índice construído no simulador.
+          </p>
+        </div>
+
+        <div id="futureCompare" class="future-compare" style="--future-position: 58%; --scenario-health: 0.7;">
+          <div class="future-world future-world-risk" aria-hidden="true">
+            <span class="future-sky"></span><span class="future-sun"></span><span class="future-cloud"></span>
+            <span class="future-hill"></span><span class="future-river"></span><span class="future-field"></span>
+            <span class="future-city"></span><span class="future-waste waste-a"></span><span class="future-waste waste-b"></span>
+            <strong>Futuro em risco</strong>
+          </div>
+          <div class="future-world future-world-balanced" aria-hidden="true">
+            <span class="future-sky"></span><span class="future-sun"></span><span class="future-cloud"></span>
+            <span class="future-hill"></span><span class="future-river"></span><span class="future-field"></span>
+            <span class="future-city"></span><span class="future-tree tree-a"></span><span class="future-tree tree-b"></span>
+            <strong>Futuro regenerado</strong>
+          </div>
+          <span class="future-divider" aria-hidden="true"><i></i></span>
+          <input id="futureRange" class="future-range" type="range" min="5" max="95" value="58" aria-label="Comparar futuro em risco e futuro regenerado">
+        </div>
+
+        <div class="future-reading">
+          <span>Cenário atual</span>
+          <strong id="futureScenarioTitle">Transição promissora</strong>
+          <p id="futureScenarioText">As escolhas atuais já recuperam parte da paisagem, mas ainda podem avançar.</p>
+        </div>
+      </section>
+
+      <!-- Dados reais: apresenta numeros e fontes oficiais para fundamentar o tema. -->
+      <section class="section data-section" id="dados" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Dados reais</p>
+          <h2>Pesquisa também faz parte do equilíbrio.</h2>
+          <p>
+            Os números abaixo conectam o tema do site com fontes oficiais e mostram por que produzir
+            bem, reduzir perdas e cuidar dos recursos naturais é uma necessidade concreta.
+          </p>
+        </div>
+
+        <div class="data-grid">
+          <article class="data-card">
+            <span>Produção de alimentos</span>
+            <strong>350,2 mi t</strong>
+            <p>Safra brasileira de grãos 2024/25 estimada pela Conab em recorde histórico.</p>
+            <a href="https://www.gov.br/conab/pt-br/assuntos/noticias/safra-de-graos-2024-205-e-estimada-pela-conab-em-350-2-milhoes-de-toneladas-e-atinge-novo-recorde-historico" target="_blank" rel="noreferrer">Fonte: Conab</a>
+          </article>
+          <article class="data-card">
+            <span>Perda pós-colheita</span>
+            <strong>13%</strong>
+            <p>Parcela estimada de alimentos perdida globalmente depois da colheita e antes do varejo.</p>
+            <a href="https://www.fao.org/platform-food-loss-waste/flw-events/international-day-food-loss-and-waste/en" target="_blank" rel="noreferrer">Fonte: FAO</a>
+          </article>
+          <article class="data-card">
+            <span>Desperdicio no consumo</span>
+            <strong>19%</strong>
+            <p>Estimativa global de desperdício em domicílios, varejo e serviços de alimentação.</p>
+            <a href="https://www.fao.org/policy-support/policy-themes/food-loss-and-food-waste/" target="_blank" rel="noreferrer">Fonte: FAO/UNEP</a>
+          </article>
+          <article class="data-card">
+            <span>Safra no Paraná</span>
+            <strong>46,8 mi t</strong>
+            <p>Maior safra de grãos da história do estado no ciclo 2024/25, segundo o Governo do Paraná.</p>
+            <a href="https://www.parana.pr.gov.br/aen/Noticia/Com-468-milhoes-de-toneladas-Parana-teve-maior-safra-de-graos-de-sua-historia-em-2425" target="_blank" rel="noreferrer">Fonte: Governo do Paraná</a>
+          </article>
+          <article class="data-card">
+            <span>Solo conservado</span>
+            <strong>Rotação</strong>
+            <p>A Embrapa aponta rotação de culturas e cobertura vegetal como práticas que melhoram o solo e a infiltração de água.</p>
+            <a href="https://www.embrapa.br/agencia-de-informacao-tecnologica/cultivos/milho/producao/rotacao-de-culturas" target="_blank" rel="noreferrer">Fonte: Embrapa</a>
+          </article>
+          <article class="data-card">
+            <span>Baixo carbono</span>
+            <strong>ABC+</strong>
+            <p>O MAPA organiza tecnologias como plantio direto, sistemas irrigados e recuperação de pastagens no Plano ABC+.</p>
+            <a href="https://www.gov.br/agricultura/pt-br/assuntos/sustentabilidade/planoabc-abcmais/acoes-do-plano" target="_blank" rel="noreferrer">Fonte: MAPA</a>
+          </article>
+        </div>
+      </section>
+
+      <!-- Rota da conexao: mostra o caminho do alimento do campo ate a cidade. -->
       <section class="section route-section" id="rota" data-reveal>
         <div class="section-heading">
-          <p class="eyebrow">Rota da conexao</p>
-          <h2>Do campo ate a cidade, tudo esta ligado.</h2>
+          <p class="eyebrow">Rota da conexão</p>
+          <h2>Do campo até a cidade, tudo está ligado.</h2>
           <p>
-            Um alimento sustentavel nao nasce pronto na prateleira. Ele percorre etapas que
+            Um alimento sustentável não nasce pronto na prateleira. Ele percorre etapas que
             dependem de cuidado ambiental, tecnologia e responsabilidade coletiva.
           </p>
         </div>
@@ -286,26 +853,72 @@
           </li>
           <li class="route-card">
             <strong>Manejo inteligente</strong>
-            <p>Monitoramento do clima, da agua e da saude das plantas para evitar excessos.</p>
+            <p>Monitoramento do clima, da água e da saúde das plantas para evitar excessos.</p>
           </li>
           <li class="route-card">
             <strong>Colheita com valor</strong>
             <p>Mais qualidade, menos perda e melhor uso do trabalho de quem produz.</p>
           </li>
           <li class="route-card">
-            <strong>Transporte responsavel</strong>
-            <p>Rotas mais eficientes, menos desperdicio e maior frescor ao chegar na cidade.</p>
+            <strong>Transporte responsável</strong>
+            <p>Rotas mais eficientes, menos desperdício e maior frescor ao chegar na cidade.</p>
           </li>
           <li class="route-card">
-            <strong>Consumo com consciencia</strong>
-            <p>Escolhas urbanas podem premiar boas praticas e inspirar novos ciclos no campo.</p>
+            <strong>Consumo com consciência</strong>
+            <p>Escolhas urbanas podem premiar boas práticas e inspirar novos ciclos no campo.</p>
           </li>
         </ol>
       </section>
 
+      <!-- Linha do tempo: compara passado, presente e futuro do agro sustentavel. -->
+      <section class="section timeline-section" id="linha-do-tempo" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Linha do tempo</p>
+          <h2>Do impacto ao futuro sustentável.</h2>
+          <p>
+            A evolução do agro passa por escolhas. Compare o antes, o hoje e o futuro para entender
+            como tecnologia e responsabilidade ambiental mudam a história.
+          </p>
+        </div>
+
+        <div class="timeline-layout">
+          <div class="timeline-steps" role="tablist" aria-label="Linha do tempo do agro sustentável">
+            <button class="timeline-step is-active" type="button" data-timeline="antes" role="tab" aria-selected="true">
+              <i aria-hidden="true"></i>
+              <span>Antes</span>
+              <strong>Perdas e desgaste</strong>
+              <small>Clique para ver</small>
+            </button>
+            <button class="timeline-step" type="button" data-timeline="hoje" role="tab" aria-selected="false">
+              <i aria-hidden="true"></i>
+              <span>Hoje</span>
+              <strong>Tecnologia no campo</strong>
+              <small>Clique para ver</small>
+            </button>
+            <button class="timeline-step" type="button" data-timeline="futuro" role="tab" aria-selected="false">
+              <i aria-hidden="true"></i>
+              <span>Futuro</span>
+              <strong>Equilíbrio permanente</strong>
+              <small>Clique para ver</small>
+            </button>
+          </div>
+
+          <article class="timeline-detail">
+            <p class="output-label">Etapa selecionada</p>
+            <h3 id="timelineTitle">Antes: perdas e desgaste</h3>
+            <p id="timelineText">
+              Manejo sem planejamento, desperdício de água e perda de solo reduziam a produtividade
+              e aumentavam a pressão sobre a natureza.
+            </p>
+            <ul id="timelineList" class="impact-highlights"></ul>
+          </article>
+        </div>
+      </section>
+
+      <!-- Ideias sustentaveis: reune praticas que ajudam campo, ambiente e sociedade. -->
       <section class="section ideas-section" data-reveal>
         <div class="section-heading">
-          <p class="eyebrow">Inovacoes sustentaveis</p>
+          <p class="eyebrow">Inovações sustentáveis</p>
           <h2>Quatro frentes que fortalecem o agro e o futuro.</h2>
         </div>
 
@@ -313,40 +926,212 @@
           <article class="idea-card tone-earth">
             <h3>Solo regenerado</h3>
             <p>
-              Praticas regenerativas mantem nutrientes, seguram a agua no solo e reduzem erosao,
+              Práticas regenerativas mantêm nutrientes, seguram a água no solo e reduzem erosão,
               o que preserva a capacidade produtiva da terra.
             </p>
           </article>
           <article class="idea-card tone-sun">
             <h3>Energia que volta em economia</h3>
             <p>
-              Paineis solares, sensores e automacao ajudam a diminuir custos e tornam a gestao
-              mais precisa em diferentes etapas da producao.
+              Painéis solares, sensores e automação ajudam a diminuir custos e tornam a gestão
+              mais precisa em diferentes etapas da produção.
             </p>
           </article>
           <article class="idea-card tone-water">
-            <h3>Agua tratada como patrimonio</h3>
+            <h3>Água tratada como patrimônio</h3>
             <p>
-              Cada gota economizada no campo significa resiliencia para a producao e protecao
+              Cada gota economizada no campo significa resiliência para a produção e proteção
               dos ecossistemas ao redor.
             </p>
           </article>
           <article class="idea-card tone-city">
             <h3>Cidade que entende a origem</h3>
             <p>
-              Quando o consumo reconhece o valor do manejo responsavel, toda a cadeia ganha:
+              Quando o consumo reconhece o valor do manejo responsável, toda a cadeia ganha:
               produtor, ambiente e sociedade.
             </p>
           </article>
         </div>
       </section>
 
+      <!-- Painel interativo: permite explorar o mapa da propriedade e seus pontos sustentaveis. -->
+      <section class="section observatory-section" id="painel" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Painel interativo</p>
+          <h2>Explore a fazenda modelo e veja onde o equilíbrio acontece.</h2>
+          <p>
+            Toque nos pontos da propriedade sustentável para descobrir como solo, água, energia,
+            biodiversidade e cidade se conectam. Esta área complementa o simulador e mostra, de forma
+            visual, como cada decisão fortalece o agro e melhora a vida coletiva.
+          </p>
+          <button
+            id="observatoryMobileOpenButton"
+            class="button button-primary mobile-modal-trigger"
+            type="button"
+            aria-controls="observatoryMobileDialog"
+            aria-expanded="false"
+          >
+            Ver painel
+          </button>
+        </div>
+
+        <div id="observatoryMobileDialog" class="observatory-layout">
+          <div class="mobile-modal-head">
+            <div>
+              <p class="eyebrow">Painel interativo</p>
+              <strong>Toque em um ponto do mapa</strong>
+            </div>
+            <button id="observatoryMobileCloseButton" class="settings-close mobile-modal-close" type="button" aria-label="Fechar painel interativo">
+              ×
+            </button>
+          </div>
+
+          <div class="panel observatory-map-panel">
+            <div class="observatory-scene" aria-label="Mapa interativo da propriedade sustentável">
+              <img class="observatory-image" src="./img/Painel interativo.png" alt="Imagem do painel interativo com campo, rio, mata, cidade e energia solar">
+              <span class="observatory-click-hint" aria-hidden="true">Clique nos pontos</span>
+
+              <button class="zone-hotspot is-active hotspot-solo" type="button" data-zone="plantio" aria-pressed="true" aria-label="Ver área de plantio no mapa">
+                Plantio
+              </button>
+              <button class="zone-hotspot hotspot-agua" type="button" data-zone="rio" aria-pressed="false" aria-label="Ver rio e nascente no mapa">
+                Rio
+              </button>
+              <button class="zone-hotspot hotspot-energia" type="button" data-zone="solar" aria-pressed="false" aria-label="Ver energia solar no mapa">
+                Solar
+              </button>
+              <button class="zone-hotspot hotspot-biodiversidade" type="button" data-zone="preservacao" aria-pressed="false" aria-label="Ver área de preservação no mapa">
+                Preservação
+              </button>
+              <button class="zone-hotspot hotspot-cidade" type="button" data-zone="cidade" aria-pressed="false" aria-label="Ver conexão com a cidade no mapa">
+                Cidade
+              </button>
+            </div>
+
+            <div class="observatory-caption">
+              <strong>Mapa da fazenda conectada</strong>
+              <p>
+                Cada ponto mostra como uma escolha bem planejada no campo chega até a cidade em forma
+                de alimento, equilíbrio ambiental e qualidade de vida.
+              </p>
+            </div>
+          </div>
+
+          <aside class="panel observatory-detail-panel">
+            <button id="observatoryDetailCloseButton" class="settings-close mobile-detail-close" type="button" aria-label="Voltar ao mapa do painel">
+              ×
+            </button>
+
+            <div class="observatory-summary-card">
+              <p class="output-label">Zona em destaque</p>
+              <strong id="zoneTitle">Solo protegido</strong>
+              <p id="zoneText">
+                Quando o solo recebe cobertura vegetal, rotação de culturas e matéria orgânica, ele
+                segura mais água, mantém nutrientes e continua produtivo por muito mais tempo.
+              </p>
+            </div>
+
+            <div class="observatory-stat-grid">
+              <article class="observatory-stat">
+                <span>Força no campo</span>
+                <strong id="zoneFieldValue">96%</strong>
+              </article>
+              <article class="observatory-stat">
+                <span>Proteção ambiental</span>
+                <strong id="zoneNatureValue">94%</strong>
+              </article>
+              <article class="observatory-stat">
+                <span>Reflexo na cidade</span>
+                <strong id="zoneCityValue">88%</strong>
+              </article>
+            </div>
+
+            <div class="observatory-signal-card">
+              <span class="output-label">Leitura do simulador</span>
+              <strong id="zoneSignalValue">0%</strong>
+              <p id="zoneSignalText">
+                Ajuste o simulador acima para ver como o cenário atual fortalece esta área da propriedade.
+              </p>
+            </div>
+
+            <ul id="zonePracticeList" class="impact-highlights"></ul>
+          </aside>
+        </div>
+
+        <div class="community-grid">
+          <article class="community-card">
+            <strong>Na escola</strong>
+            <p>O tema vira aprendizado, pesquisa, cidadania e respeito pela origem do alimento.</p>
+          </article>
+          <article class="community-card">
+            <strong>Na propriedade</strong>
+            <p>Boas práticas reduzem perdas, conservam recursos e fortalecem a produção no longo prazo.</p>
+          </article>
+          <article class="community-card">
+            <strong>Na cidade</strong>
+            <p>Consumir com mais consciência valoriza quem produz bem e ajuda a diminuir o desperdício.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Quiz educativo: inicia o desafio de perguntas e libera conquistas de aprendizado. -->
+      <section class="section quiz-section" id="quiz" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Quiz educativo</p>
+          <h2>Teste seus conhecimentos sobre agro sustentável.</h2>
+          <p>
+            Responda uma pergunta por vez e veja a explicação correta. No final, o site mostra sua
+            pontuação e libera conquistas de aprendizado.
+          </p>
+        </div>
+
+        <div class="panel quiz-start-panel">
+          <button id="quizStartButton" class="button button-primary" type="button" aria-label="Começar quiz educativo">
+            Começar quiz
+          </button>
+          <p id="quizSectionResult" class="quiz-section-result" aria-live="polite" hidden></p>
+        </div>
+      </section>
+
+      <!-- Recorte regional: conecta o projeto com a realidade agricola do Parana. -->
+      <section class="section parana-section" id="parana" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Meu território</p>
+          <h2>Paraná: campo forte, cooperação e sustentabilidade local.</h2>
+          <p>
+            Conectar o projeto ao Paraná deixa a proposta mais real: o estado tem produção expressiva
+            de grãos, cooperativas fortes, agricultura familiar e desafios ambientais que combinam com
+            o tema do Agrinho.
+          </p>
+        </div>
+
+        <div class="parana-grid">
+          <article class="parana-card">
+            <strong>Grãos e diversidade</strong>
+            <p>Soja, milho, trigo, feijão, hortaliças e produção animal formam uma cadeia ampla e importante para o estado.</p>
+          </article>
+          <article class="parana-card">
+            <strong>Cooperativas</strong>
+            <p>A organização coletiva fortalece pequenos, médios e grandes produtores, aproximando tecnologia e mercado.</p>
+          </article>
+          <article class="parana-card">
+            <strong>Água e solo</strong>
+            <p>Nascentes, rios, matas ciliares e manejo conservacionista são essenciais para manter produtividade e vida.</p>
+          </article>
+          <article class="parana-card">
+            <strong>Escola e comunidade</strong>
+            <p>O Agrinho transforma esses temas em pesquisa, cidadania, programação e compromisso com o futuro.</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Compromisso: gera um manifesto personalizado e salva mensagens no mural local. -->
       <section class="section pledge-section" id="compromisso" data-reveal>
         <div class="section-heading">
           <p class="eyebrow">Compromisso pessoal</p>
-          <h2>Transforme a reflexao em uma mensagem de acao.</h2>
+          <h2>Transforme a reflexão em uma mensagem de ação.</h2>
           <p>
-            Preencha os campos, gere um manifesto autoral e guarde sua mensagem no mural local
+            Preencha os campos, gere um manifesto e guarde sua mensagem no mural local
             do navegador.
           </p>
         </div>
@@ -359,7 +1144,7 @@
             </label>
 
             <label for="personRole">
-              <span>De onde voce fala?</span>
+              <span>De onde você fala?</span>
               <select id="personRole" name="personRole">
                 <option value="estudante">Sou estudante</option>
                 <option value="campo">Falo a partir do campo</option>
@@ -368,27 +1153,27 @@
             </label>
 
             <label for="personPriority">
-              <span>Qual prioridade voce quer defender?</span>
+              <span>Qual prioridade você quer defender?</span>
               <select id="personPriority" name="personPriority">
-                <option value="agua">Uso inteligente da agua</option>
-                <option value="solo">Saude do solo</option>
+                <option value="agua">Uso inteligente da água</option>
+                <option value="solo">Saúde do solo</option>
                 <option value="energia">Energia limpa</option>
                 <option value="consumo">Consumo consciente</option>
               </select>
             </label>
 
             <label for="personAction">
-              <span>Uma atitude que voce quer fortalecer</span>
+              <span>Uma atitude que você quer fortalecer</span>
               <textarea
                 id="personAction"
                 name="personAction"
                 rows="4"
                 maxlength="180"
-                placeholder="Ex.: valorizar alimentos produzidos com responsabilidade e reduzir desperdicio."
+                placeholder="Ex.: valorizar alimentos produzidos com responsabilidade e reduzir desperdício."
               ></textarea>
             </label>
 
-            <button class="button button-primary full-width" type="submit">
+            <button class="button button-primary full-width" type="submit" aria-label="Gerar manifesto personalizado">
               Gerar manifesto
             </button>
           </form>
@@ -396,13 +1181,13 @@
           <div class="panel pledge-output">
             <p class="output-label">Manifesto gerado</p>
             <blockquote id="pledgePreview">
-              Seu manifesto vai aparecer aqui com uma mensagem personalizada sobre o futuro sustentavel.
+              Seu manifesto vai aparecer aqui com uma mensagem personalizada sobre o futuro sustentável.
             </blockquote>
             <div class="output-actions">
-              <button id="savePledgeButton" class="button button-soft" type="button">
+              <button id="savePledgeButton" class="button button-soft" type="button" aria-label="Guardar manifesto no mural">
                 Guardar no mural
               </button>
-              <button id="clearPledgesButton" class="button button-outline" type="button">
+              <button id="clearPledgesButton" class="button button-outline" type="button" aria-label="Limpar mural de compromissos">
                 Limpar mural
               </button>
             </div>
@@ -412,27 +1197,86 @@
 
         <div class="mural-head">
           <h3>Mural de compromissos</h3>
-          <p>As mensagens ficam salvas localmente neste navegador para continuar a experiencia.</p>
         </div>
 
         <div id="pledgeWall" class="pledge-wall"></div>
       </section>
+
+      <!-- Jornal do Futuro: transforma as decisoes da jornada em uma capa personalizada de 2040. -->
+      <section class="section newspaper-section" id="jornal-2040" data-reveal>
+        <div class="section-heading">
+          <p class="eyebrow">Jornal do Futuro</p>
+          <h2>Veja a manchete que suas decisões criaram para 2040.</h2>
+          <p>
+            A capa combina o simulador, o quiz, a Semente Viva e o compromisso registrado.
+            Ela muda sempre que a jornada evolui e pode ser baixada como imagem.
+          </p>
+        </div>
+
+        <div class="newspaper-layout">
+          <article id="futureNewspaper" class="future-newspaper">
+            <header class="newspaper-masthead">
+              <span>Edição especial | Paraná, 2040</span>
+              <strong>RAIZ DO AMANHÃ</strong>
+              <small>Notícias cultivadas pelas escolhas de hoje</small>
+            </header>
+            <div class="newspaper-body">
+              <p id="newspaperKicker" class="newspaper-kicker">DESENVOLVIMENTO SUSTENTÁVEL</p>
+              <h3 id="newspaperHeadline">Paraná reduz desperdício e recupera nascentes</h3>
+              <p id="newspaperSubheadline" class="newspaper-subheadline">
+                Tecnologia, educação e compromisso coletivo transformam campo e cidade.
+              </p>
+              <div class="newspaper-hero" aria-hidden="true">
+                <span class="newspaper-sun"></span><span class="newspaper-hill"></span>
+                <span class="newspaper-river"></span><span class="newspaper-plant"></span>
+                <span class="newspaper-city"></span>
+              </div>
+              <div class="newspaper-columns">
+                <div>
+                  <strong id="newspaperLeadTitle">Uma geração decidiu agir</strong>
+                  <p id="newspaperLeadText">O equilíbrio cresceu com práticas responsáveis e participação da comunidade.</p>
+                </div>
+                <dl class="newspaper-metrics">
+                  <div><dt>Água</dt><dd id="newspaperWater">0%</dd></div>
+                  <div><dt>Biodiversidade</dt><dd id="newspaperBiodiversity">0%</dd></div>
+                  <div><dt>Equilíbrio</dt><dd id="newspaperScore">0%</dd></div>
+                </dl>
+              </div>
+              <footer class="newspaper-footer">
+                <span id="newspaperSignature">Capa criada pela comunidade Raiz Up</span>
+                <span id="newspaperSeedStage">Semente Viva: início da jornada</span>
+              </footer>
+            </div>
+          </article>
+
+          <aside class="panel newspaper-controls">
+            <p class="output-label">Sua edição</p>
+            <h3>Leve esta história com você.</h3>
+            <p>A imagem é criada no próprio navegador e não envia seus dados para nenhum servidor.</p>
+            <button id="refreshNewspaperButton" class="button button-soft full-width" type="button">Atualizar manchete</button>
+            <button id="downloadNewspaperButton" class="button button-primary full-width" type="button">Baixar capa em PNG</button>
+            <p id="newspaperStatus" class="output-status" aria-live="polite">A capa acompanha automaticamente sua jornada.</p>
+          </aside>
+        </div>
+        <canvas id="newspaperCanvas" width="1200" height="1600" hidden></canvas>
+      </section>
     </main>
 
+    <!-- Footer: identifica o autor, o concurso e o link para o GitHub. -->
     <footer class="site-footer" data-reveal>
-      <p>
-        Projeto autoral desenvolvido em HTML, CSS e JavaScript puros para a subcategoria 3 do
-        Concurso Agrinho 2026.
-      </p>
-      <div class="footer-tags">
-        <span>Repositorio publico</span>
-        <span>Sem frameworks</span>
-        <span>Layout responsivo</span>
-        <span>Experiencia interativa</span>
-      </div>
+      <p>Feito por Eduardo Valentin Carneiro | Agrinho 2026</p>
+      <a
+        class="button button-outline footer-github"
+        href="https://github.com/EduardoValentinCarneiro"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="Abrir perfil de Eduardo Valentin Carneiro no GitHub"
+      >
+        Meu GitHub
+      </a>
     </footer>
   </div>
 
-  <script src="./js/main.js" defer></script>
+  <script src="./script.js" defer></script>
 </body>
 </html>
