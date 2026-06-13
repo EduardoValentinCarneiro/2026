@@ -217,11 +217,7 @@
     { id: "compromisso", title: "Voz do Futuro", description: "Gerou e guardou um manifesto no mural." },
   ];
 
-  // Resumo falado: texto usado pelo botao de leitura em voz alta.
-  const pageSummaryText =
-    "Raiz Up apresenta o tema Agro forte, futuro sustentável. O site mostra simulador, Semente Viva, plantio pelo sopro, comparação de futuros, jornal de 2040, dados reais, mapa interativo, quiz, sons ambientais e compromisso pessoal para aproximar campo, cidade e meio ambiente.";
-
-  const journeyMilestones = ["simulator", "data", "quiz", "pledge", "planting", "motion", "spatial"];
+  const journeyMilestones = ["simulator", "data", "quiz", "pledge", "planting"];
   const seedStageNames = [
     "Semente adormecida",
     "Primeira raiz",
@@ -328,6 +324,7 @@
   const fontIncreaseButton = document.getElementById("fontIncreaseButton");
   const readerButton = document.getElementById("readerButton");
   const readerStopButton = document.getElementById("readerStopButton");
+  const summaryAudio = document.getElementById("summaryAudio");
   const readingModeButton = document.getElementById("readingModeButton");
   const readerStatus = document.getElementById("readerStatus");
   const achievementList = document.getElementById("achievementList");
@@ -405,6 +402,8 @@
   const livingRoots = document.getElementById("livingRoots");
   const rootPaths = Array.from(document.querySelectorAll(".root-path"));
   const seedCompanion = document.getElementById("seedCompanion");
+  const seedCompanionButton = document.getElementById("seedCompanionButton");
+  const seedCompanionDetails = document.getElementById("seedCompanionDetails");
   const seedStageLabel = document.getElementById("seedStageLabel");
   const seedProgressFill = document.getElementById("seedProgressFill");
   const seedProgressText = document.getElementById("seedProgressText");
@@ -413,16 +412,18 @@
   const blowStartButton = document.getElementById("blowStartButton");
   const plantFallbackButton = document.getElementById("plantFallbackButton");
   const blowStatus = document.getElementById("blowStatus");
-  const motionToggleButton = document.getElementById("motionToggleButton");
-  const motionStatus = document.getElementById("motionStatus");
-  const spatialAudioButton = document.getElementById("spatialAudioButton");
-  const spatialNatureAudio = document.getElementById("spatialNatureAudio");
-  const spatialStatus = document.getElementById("spatialStatus");
-  const spatialPanDot = document.getElementById("spatialPanDot");
   const futureCompare = document.getElementById("futureCompare");
   const futureRange = document.getElementById("futureRange");
   const futureScenarioTitle = document.getElementById("futureScenarioTitle");
   const futureScenarioText = document.getElementById("futureScenarioText");
+  const futureTreeLayer = document.getElementById("futureTreeLayer");
+  const futureFishLayer = document.getElementById("futureFishLayer");
+  const futureEnergyLayer = document.getElementById("futureEnergyLayer");
+  const futureFoodLayer = document.getElementById("futureFoodLayer");
+  const futureTreeCount = document.getElementById("futureTreeCount");
+  const futureFishCount = document.getElementById("futureFishCount");
+  const futureEnergyCount = document.getElementById("futureEnergyCount");
+  const futureFoodCount = document.getElementById("futureFoodCount");
   const futureNewspaper = document.getElementById("futureNewspaper");
   const newspaperKicker = document.getElementById("newspaperKicker");
   const newspaperHeadline = document.getElementById("newspaperHeadline");
@@ -438,6 +439,10 @@
   const downloadNewspaperButton = document.getElementById("downloadNewspaperButton");
   const newspaperStatus = document.getElementById("newspaperStatus");
   const newspaperCanvas = document.getElementById("newspaperCanvas");
+  const newspaperTreeLayer = document.getElementById("newspaperTreeLayer");
+  const newspaperFishLayer = document.getElementById("newspaperFishLayer");
+  const newspaperEnergyLayer = document.getElementById("newspaperEnergyLayer");
+  const newspaperCropLayer = document.getElementById("newspaperCropLayer");
 
   // Estado interno: guarda a situacao atual de audio, quiz, mural, painel e simulador.
   let currentManifesto = "";
@@ -447,7 +452,6 @@
   let currentAmbientIndex = 0;
   let ambientPlaying = false;
   let achievementAudioContext = null;
-  let summaryUtterance = null;
   let readingSummary = false;
   let currentFontScale = "normal";
   let activeTimeline = "antes";
@@ -468,12 +472,6 @@
   let microphoneAudioContext = null;
   let microphoneAnimationFrame = 0;
   let lastBlowPlantTime = 0;
-  let motionEnabled = false;
-  let spatialEnabled = false;
-  let spatialNeedsGesture = false;
-  let spatialAudioContext = null;
-  let spatialSourceNode = null;
-  let spatialPannerNode = null;
   let lastQuizPercentage = 0;
   let scenarioInteractionStarted = false;
   const unlockedAchievements = new Set(getStoredAchievements());
@@ -485,6 +483,15 @@
     city: 0,
     score: 0,
     focus: "solo",
+    strategies: [],
+    intensity: 1,
+    ecosystem: {
+      trees: 0,
+      dryTrees: 0,
+      fish: 0,
+      energy: 0,
+      food: 0,
+    },
   };
 
   // Preferencias e mensagens: aplica tema, fonte, modo leitura e frase do periodo do dia.
@@ -612,43 +619,21 @@
     quickAchievementCount.textContent = `${unlockedAchievements.size}/${achievementDefinitions.length}`;
   }
 
-  // Leitura em voz alta: usa a API do navegador para narrar o resumo do projeto.
-  function readPageSummary() {
-    if (!("speechSynthesis" in window)) {
-      readerStatus.textContent = "A leitura em voz alta não está disponível neste navegador.";
+  // Leitura em voz alta: reproduz a narração gravada do resumo do projeto.
+  async function readPageSummary() {
+    summaryAudio.currentTime = 0;
+    try {
+      await summaryAudio.play();
+    } catch (error) {
+      readingSummary = false;
+      readerStatus.textContent = "Não foi possível iniciar o áudio do resumo.";
       updateQuickDockState();
-      return;
     }
-
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(pageSummaryText);
-    summaryUtterance = utterance;
-    utterance.lang = "pt-BR";
-    utterance.rate = 0.95;
-    utterance.onend = function () {
-      readingSummary = false;
-      summaryUtterance = null;
-      readerStatus.textContent = "Leitura finalizada.";
-      updateQuickDockState();
-    };
-    utterance.onerror = function () {
-      readingSummary = false;
-      summaryUtterance = null;
-      readerStatus.textContent = "A leitura foi interrompida.";
-      updateQuickDockState();
-    };
-    readingSummary = true;
-    window.speechSynthesis.speak(utterance);
-    readerStatus.textContent = "Resumo em leitura. Você pode continuar navegando pelo site.";
-    updateQuickDockState();
   }
 
   function stopPageSummary() {
-    if ("speechSynthesis" in window) {
-      window.speechSynthesis.cancel();
-    }
-
-    summaryUtterance = null;
+    summaryAudio.pause();
+    summaryAudio.currentTime = 0;
     readingSummary = false;
     readerStatus.textContent = "Leitura parada.";
     updateQuickDockState();
@@ -683,7 +668,7 @@
     dayMessageText.textContent = message.text;
   }
 
-  // Jornada integrada: conecta simulador, pesquisa, quiz, plantio, sensores e compromisso.
+  // Jornada integrada: conecta simulador, pesquisa, quiz, plantio e compromisso.
   function getStoredJourney() {
     const defaults = {
       simulator: false,
@@ -691,8 +676,6 @@
       quiz: false,
       pledge: false,
       planting: false,
-      motion: false,
-      spatial: false,
       plantCount: 0,
       quizPercentage: 0,
     };
@@ -714,7 +697,7 @@
   }
 
   function getSeedStage() {
-    const stageByCount = [0, 1, 2, 3, 3, 4, 4, 5];
+    const stageByCount = [0, 1, 2, 3, 4, 5];
     return stageByCount[getCompletedJourneyCount()] || 0;
   }
 
@@ -735,6 +718,12 @@
     seedProgressFill.style.width = `${(completed / journeyMilestones.length) * 100}%`;
     seedProgressText.textContent = `${completed} de ${journeyMilestones.length} experiências`;
     renderFutureNewspaper();
+  }
+
+  function setSeedCompanionExpanded(expanded) {
+    seedCompanion.classList.toggle("is-expanded", expanded);
+    seedCompanionButton.setAttribute("aria-expanded", String(expanded));
+    seedCompanionDetails.setAttribute("aria-hidden", String(!expanded));
   }
 
   function completeJourneyMilestone(key, extraData) {
@@ -775,62 +764,209 @@
     });
   }
 
+  function clampNumber(value, minimum, maximum) {
+    return Math.max(minimum, Math.min(maximum, value));
+  }
+
+  function calculateEcosystem() {
+    const strategies = currentScenarioReadings.strategies;
+    const coverage = strategies.length / 4;
+    const intensityRatio = (currentScenarioReadings.intensity - 1) / 4;
+    const hasIrrigation = strategies.includes("irrigacao");
+    const hasEnergy = strategies.includes("energia");
+    const hasCompost = strategies.includes("compostagem");
+    const hasLogistics = strategies.includes("logistica");
+    const isAbandoned = strategies.length === 0 && currentScenarioReadings.intensity === 1;
+
+    let trees = Math.round(
+      coverage * 5 +
+      intensityRatio * 2 +
+      (currentScenarioReadings.biodiversity / 100) * 2 +
+      (currentScenarioReadings.focus === "solo" ? coverage : 0)
+    );
+    let fish = Math.round(
+      coverage * 4 +
+      intensityRatio * 2 +
+      (currentScenarioReadings.water / 100) * 2.5 +
+      (currentScenarioReadings.focus === "agua" ? 1 : 0) +
+      (hasIrrigation ? 0.5 : 0)
+    );
+    let energy = Math.round(
+      (hasEnergy ? 2 : 0) +
+      coverage +
+      intensityRatio * 1.5 +
+      (currentScenarioReadings.economy / 100) +
+      (currentScenarioReadings.focus === "energia" ? 1.5 : 0)
+    );
+    let food = Math.round(
+      coverage * 3 +
+      intensityRatio * 2 +
+      ((currentScenarioReadings.biodiversity + currentScenarioReadings.economy) / 200) * 2 +
+      (hasCompost ? 0.75 : 0) +
+      (hasLogistics ? 0.5 : 0)
+    );
+
+    if (currentScenarioReadings.water < 30 && !hasIrrigation) fish = 0;
+    if (isAbandoned) {
+      trees = 0;
+      fish = 0;
+      energy = 0;
+      food = 0;
+    }
+
+    trees = clampNumber(trees, 0, 10);
+    fish = clampNumber(fish, 0, 10);
+    energy = clampNumber(energy, 0, 6);
+    food = clampNumber(food, 0, 8);
+
+    return {
+      trees,
+      dryTrees: trees >= 8 ? 0 : clampNumber(Math.ceil((10 - trees) / 2), 1, 5),
+      fish,
+      energy,
+      food,
+      isAbandoned,
+      quality: currentScenarioReadings.score >= 80 ? "flourishing" : currentScenarioReadings.score >= 60 ? "recovering" : currentScenarioReadings.score >= 40 ? "fragile" : "critical",
+      river: currentScenarioReadings.water >= 65 ? "living" : currentScenarioReadings.water >= 40 ? "recovering" : "dry",
+    };
+  }
+
+  function renderVisualItems(layer, count, className, offset) {
+    if (!layer) return;
+    layer.replaceChildren();
+    for (let index = 0; index < count; index += 1) {
+      const item = document.createElement("i");
+      item.className = className;
+      item.style.setProperty("--item-x", `${7 + ((index * 17 + offset) % 78)}%`);
+      item.style.setProperty("--item-scale", String(0.72 + ((index * 13) % 30) / 100));
+      item.style.setProperty("--item-delay", `${index * 70}ms`);
+      item.style.setProperty("--item-row", String(index % 3));
+      item.style.setProperty("--fish-column", `${(index % 4) * 18}px`);
+      item.style.setProperty("--fish-band", `${Math.floor(index / 4) * 24}px`);
+      item.style.setProperty("--panel-column", `${(index % 3) * 58}px`);
+      item.style.setProperty("--panel-band", `${Math.floor(index / 3) * 48}px`);
+      item.style.setProperty("--crop-column", `${(index % 4) * 48}px`);
+      item.style.setProperty("--crop-band", `${Math.floor(index / 4) * 18}px`);
+      item.style.setProperty("--paper-fish-column", `${(index % 4) * 13}px`);
+      item.style.setProperty("--paper-fish-band", `${Math.floor(index / 4) * 18}px`);
+      item.style.setProperty("--paper-panel-column", `${(index % 3) * 44}px`);
+      item.style.setProperty("--paper-panel-band", `${Math.floor(index / 3) * 37}px`);
+      item.style.setProperty("--paper-crop-column", `${(index % 4) * 34}px`);
+      item.style.setProperty("--paper-crop-band", `${Math.floor(index / 4) * 14}px`);
+      item.style.setProperty("--item-rotate", `${-8 + (index % 4) * 4}deg`);
+      if (className.startsWith("ecosystem-tree")) {
+        item.style.setProperty("--item-x", `${55 + (index % 5) * 8}%`);
+        item.style.setProperty("--tree-bottom", `${21 + Math.floor(index / 5) * 19}%`);
+      }
+      layer.appendChild(item);
+    }
+  }
+
   function renderTwoFutures() {
     const score = currentScenarioReadings.score || 0;
-    futureCompare.style.setProperty("--scenario-health", String(Math.max(0.12, score / 100)));
+    const ecosystem = calculateEcosystem();
+    currentScenarioReadings.ecosystem = ecosystem;
+    const scenarioHealth = Math.max(0.08, score / 100);
+    futureCompare.style.setProperty("--scenario-health", String(scenarioHealth));
+    futureCompare.style.setProperty("--future-saturation", String(0.55 + scenarioHealth * 0.65));
+    futureCompare.style.setProperty("--future-brightness", String(0.72 + scenarioHealth * 0.35));
+    futureCompare.dataset.focus = currentScenarioReadings.focus;
+    futureCompare.dataset.quality = ecosystem.quality;
+    futureCompare.dataset.river = ecosystem.river;
 
-    if (score >= 85) {
-      futureScenarioTitle.textContent = "Regeneração em curso";
-      futureScenarioText.textContent = "Água, biodiversidade, produção e cidade avançam juntas para um Paraná mais resiliente.";
-    } else if (score >= 65) {
-      futureScenarioTitle.textContent = "Transição promissora";
-      futureScenarioText.textContent = "As escolhas atuais já recuperam parte da paisagem, mas ainda podem avançar.";
-    } else if (score >= 45) {
-      futureScenarioTitle.textContent = "Futuro em disputa";
-      futureScenarioText.textContent = "Alguns sinais melhoraram, porém solo, água e logística ainda precisam de decisões mais fortes.";
+    renderVisualItems(futureTreeLayer, ecosystem.trees, "ecosystem-tree is-living", 2);
+    for (let index = 0; index < ecosystem.dryTrees; index += 1) {
+      const dryTree = document.createElement("i");
+      dryTree.className = "ecosystem-tree is-dry";
+      dryTree.style.setProperty("--item-x", `${57 + index * 8}%`);
+      dryTree.style.setProperty("--tree-bottom", `${21 + (index % 2) * 17}%`);
+      dryTree.style.setProperty("--item-scale", String(0.72 + index * 0.06));
+      dryTree.style.setProperty("--item-delay", `${index * 80}ms`);
+      futureTreeLayer.appendChild(dryTree);
+    }
+    renderVisualItems(futureFishLayer, ecosystem.fish, "ecosystem-fish", 5);
+    renderVisualItems(futureEnergyLayer, ecosystem.energy, "ecosystem-panel", 12);
+    renderVisualItems(futureFoodLayer, ecosystem.food, "ecosystem-crop", 4);
+
+    futureTreeCount.textContent = String(ecosystem.trees);
+    futureFishCount.textContent = String(ecosystem.fish);
+    futureEnergyCount.textContent = String(ecosystem.energy);
+    futureFoodCount.textContent = String(ecosystem.food);
+
+    if (ecosystem.isAbandoned && currentScenarioReadings.focus === "solo") {
+      futureScenarioTitle.textContent = "Solo seco e produção interrompida";
+      futureScenarioText.textContent = "Com intensidade básica e nenhuma prática ativa, as 10 árvores desaparecem, a terra racha e a colheita chega a zero.";
+    } else if (currentScenarioReadings.focus === "agua") {
+      futureScenarioTitle.textContent = ecosystem.fish >= 8 ? "Rios vivos novamente" : ecosystem.fish > 0 ? "O rio começa a reagir" : "Rio sem vida suficiente";
+      futureScenarioText.textContent = `A água sustenta ${ecosystem.fish} de 10 peixes e ${ecosystem.trees} árvores. Irrigação inteligente e maior intensidade recuperam o curso do rio.`;
+    } else if (currentScenarioReadings.focus === "energia") {
+      futureScenarioTitle.textContent = ecosystem.energy >= 5 ? "Energia limpa impulsiona a região" : "Transição energética incompleta";
+      futureScenarioText.textContent = `${ecosystem.energy} de 6 estruturas de energia limpa aparecem no cenário e influenciam produção, renda e qualidade urbana.`;
+    } else if (currentScenarioReadings.focus === "cidade") {
+      futureScenarioTitle.textContent = ecosystem.food >= 6 ? "Campo e cidade bem conectados" : "Alimentos se perdem no caminho";
+      futureScenarioText.textContent = `${ecosystem.food} de 8 áreas de colheita chegam saudáveis ao futuro. Logística e cuidado ambiental determinam o restante.`;
+    } else if (ecosystem.trees === 10) {
+      futureScenarioTitle.textContent = "Solo protegido, dez árvores de pé";
+      futureScenarioText.textContent = "Todas as práticas e o cuidado máximo criaram a paisagem mais forte: 10 árvores vivas, colheita fértil e biodiversidade elevada.";
     } else {
-      futureScenarioTitle.textContent = "Alerta para 2040";
-      futureScenarioText.textContent = "Sem novas práticas, a paisagem perde água, biodiversidade e estabilidade produtiva.";
+      futureScenarioTitle.textContent = ecosystem.trees >= 6 ? "Solo em recuperação" : "Cobertura vegetal insuficiente";
+      futureScenarioText.textContent = `${ecosystem.trees} de 10 árvores permanecem vivas. Cada prática desmarcada ou redução de intensidade deixa a paisagem mais seca.`;
     }
   }
 
   function getNewspaperStory() {
     const score = currentScenarioReadings.score || 0;
-    const completed = getCompletedJourneyCount();
+    const focus = currentScenarioReadings.focus;
+    const ecosystem = currentScenarioReadings.ecosystem;
 
-    if (score >= 85 && completed >= 5) {
+    if (ecosystem.isAbandoned) {
+      const criticalStories = {
+        solo: ["COLAPSO DO SOLO", "Paraná vê paisagem secar e colheitas desaparecerem", "Sem proteção e sem práticas ativas, o solo perde vida, água e capacidade produtiva."],
+        agua: ["RIOS EM ALERTA", "Rios paranaenses perdem peixes e volume de água", "Ausência de cuidado deixa cursos d'água rasos e reduz a biodiversidade aquática."],
+        energia: ["ENERGIA ESTAGNADA", "Campo enfrenta custos altos sem transição energética", "Nenhuma estrutura limpa foi implantada e a produção sente os efeitos da escolha."],
+        cidade: ["DESPERDÍCIO EM ALTA", "Alimentos deixam de chegar às cidades do Paraná", "Logística frágil e falta de práticas sustentáveis ampliam perdas entre campo e mesa."],
+      };
+      const story = criticalStories[focus];
       return {
-        kicker: "VIRADA SUSTENTÁVEL",
-        headline: "Paraná reduz desperdício e recupera nascentes",
-        subheadline: "Tecnologia, educação e compromisso coletivo transformam campo e cidade.",
-        leadTitle: "Uma geração decidiu agir",
-        leadText: "Sensores, solo protegido e consumo consciente fizeram a produção crescer sem abandonar a biodiversidade.",
+        kicker: story[0],
+        headline: story[1],
+        subheadline: story[2],
+        leadTitle: "O cenário mais crítico da simulação",
+        leadText: "Todas as práticas foram desmarcadas e a intensidade ficou no nível básico. A paisagem mostra diretamente essa decisão.",
       };
     }
-    if (score >= 65) {
+
+    if (score >= 75) {
+      const positiveStories = {
+        solo: ["SOLO VIVO", "Paraná recupera matas e fortalece suas colheitas", `${ecosystem.trees} árvores simbolizam a nova cobertura vegetal criada pelas escolhas sustentáveis.`],
+        agua: ["RIOS VIVOS", "Peixes voltam aos rios recuperados do Paraná", `${ecosystem.fish} indicadores de vida aquática aparecem após o avanço no cuidado com a água.`],
+        energia: ["ENERGIA DO FUTURO", "Energia limpa transforma a produção paranaense", `${ecosystem.energy} estruturas renováveis reduzem custos e fortalecem comunidades rurais.`],
+        cidade: ["CAMPO E CIDADE", "Logística consciente reduz desperdício de alimentos", `${ecosystem.food} áreas produtivas chegam fortalecidas à mesa das famílias paranaenses.`],
+      };
+      const story = positiveStories[focus];
       return {
-        kicker: "TRANSIÇÃO VERDE",
-        headline: "Tecnologia sustentável fortalece o campo paranaense",
-        subheadline: "Boas práticas avançam e aproximam produtores, escolas e consumidores.",
-        leadTitle: "O futuro começou antes de 2040",
-        leadText: "As decisões de hoje reduziram perdas e abriram espaço para um novo ciclo de cooperação.",
+        kicker: story[0],
+        headline: story[1],
+        subheadline: story[2],
+        leadTitle: "As escolhas de hoje viraram notícia",
+        leadText: "Tecnologia, preservação e consumo consciente avançaram juntos e mudaram a paisagem de 2040.",
       };
     }
-    if (score >= 45) {
+    if (score >= 50) {
       return {
-        kicker: "DECISÕES URGENTES",
-        headline: "Paraná acelera busca por equilíbrio ambiental",
-        subheadline: "Resultados melhoram, mas água, solo e desperdício ainda desafiam comunidades.",
-        leadTitle: "A mudança ainda está ao alcance",
-        leadText: "Especialistas defendem mais integração entre tecnologia, preservação e consumo responsável.",
+        kicker: "FUTURO EM DISPUTA",
+        headline: "Paraná avança, mas recuperação ainda é desigual",
+        subheadline: `${ecosystem.trees} árvores, ${ecosystem.fish} peixes e ${ecosystem.food} áreas de colheita revelam ganhos e pontos frágeis.`,
+        leadTitle: "Cada decisão deixa uma marca",
+        leadText: "A paisagem melhorou em alguns pontos, mas práticas desativadas ainda limitam água, biodiversidade e produção.",
       };
     }
     return {
       kicker: "ALERTA 2040",
-      headline: "Água e solo pedem decisões urgentes no Paraná",
-      subheadline: "Perdas ambientais e produtivas mostram o custo de adiar escolhas sustentáveis.",
+      headline: focus === "agua" ? "Poucos peixes resistem à queda dos rios" : "Solo e produção pedem decisões urgentes no Paraná",
+      subheadline: "A baixa intensidade das ações deixa sinais visíveis de seca, perda de vida e desperdício.",
       leadTitle: "Ainda existe tempo para mudar",
-      leadText: "Recuperar nascentes, reduzir desperdícios e proteger o solo são os primeiros passos apontados pela comunidade.",
+      leadText: "Marcar novas práticas e aumentar o cuidado reconstrói a paisagem, elemento por elemento.",
     };
   }
 
@@ -854,7 +990,20 @@
     newspaperScore.textContent = `${currentScenarioReadings.score || 0}%`;
     newspaperSignature.textContent = name ? `Edição cultivada por ${name}` : "Capa criada pela comunidade Raiz Up";
     newspaperSeedStage.textContent = `Semente Viva: ${seedStageNames[stage]}`;
-    futureNewspaper.dataset.outlook = currentScenarioReadings.score >= 65 ? "positive" : "warning";
+    futureNewspaper.dataset.outlook = currentScenarioReadings.ecosystem.quality;
+    futureNewspaper.dataset.focus = currentScenarioReadings.focus;
+    futureNewspaper.dataset.river = currentScenarioReadings.ecosystem.river;
+    renderVisualItems(newspaperTreeLayer, currentScenarioReadings.ecosystem.trees, "paper-tree is-living", 3);
+    for (let index = 0; index < currentScenarioReadings.ecosystem.dryTrees; index += 1) {
+      const dryTree = document.createElement("i");
+      dryTree.className = "paper-tree is-dry";
+      dryTree.style.setProperty("--item-x", `${8 + ((index * 21 + 5) % 76)}%`);
+      dryTree.style.setProperty("--item-scale", String(0.7 + index * 0.06));
+      newspaperTreeLayer.appendChild(dryTree);
+    }
+    renderVisualItems(newspaperFishLayer, currentScenarioReadings.ecosystem.fish, "paper-fish", 6);
+    renderVisualItems(newspaperEnergyLayer, currentScenarioReadings.ecosystem.energy, "paper-panel", 10);
+    renderVisualItems(newspaperCropLayer, currentScenarioReadings.ecosystem.food, "paper-crop", 2);
   }
 
   function wrapCanvasText(context, text, x, y, maxWidth, lineHeight, maxLines) {
@@ -903,23 +1052,112 @@
 
     const landscapeTop = subtitleEnd + 32;
     const landscapeHeight = 380;
+    const ecosystem = currentScenarioReadings.ecosystem;
     const scoreRatio = Math.max(0.15, (currentScenarioReadings.score || 0) / 100);
     const sky = context.createLinearGradient(0, landscapeTop, 0, landscapeTop + landscapeHeight);
-    sky.addColorStop(0, scoreRatio >= 0.65 ? "#9bd4e3" : "#b68a70");
-    sky.addColorStop(1, scoreRatio >= 0.65 ? "#dfecc5" : "#c49a67");
+    sky.addColorStop(0, ecosystem.quality === "critical" ? "#9d735e" : scoreRatio >= 0.65 ? "#9bd4e3" : "#b68a70");
+    sky.addColorStop(1, ecosystem.quality === "critical" ? "#c48d55" : scoreRatio >= 0.65 ? "#dfecc5" : "#c49a67");
     context.fillStyle = sky;
     context.fillRect(80, landscapeTop, width - 160, landscapeHeight);
-    context.fillStyle = scoreRatio >= 0.65 ? "#4f824a" : "#766044";
+
+    // Mantém toda a ilustração presa à moldura da paisagem na imagem exportada.
+    context.save();
+    context.beginPath();
+    context.rect(80, landscapeTop, width - 160, landscapeHeight);
+    context.clip();
+
+    context.fillStyle = ecosystem.quality === "critical" ? "#71513a" : scoreRatio >= 0.65 ? "#4f824a" : "#766044";
     context.beginPath();
     context.ellipse(width / 2, landscapeTop + landscapeHeight + 90, width * 0.58, 260, 0, 0, Math.PI * 2);
     context.fill();
-    context.fillStyle = scoreRatio >= 0.65 ? "#68b7c1" : "#77766b";
+    context.fillStyle = ecosystem.river === "living" ? "#68b7c1" : ecosystem.river === "recovering" ? "#789ca0" : "#77766b";
     context.beginPath();
     context.moveTo(width * 0.58, landscapeTop + 110);
     context.bezierCurveTo(width * 0.7, landscapeTop + 180, width * 0.51, landscapeTop + 260, width * 0.66, landscapeTop + landscapeHeight);
     context.lineTo(width * 0.5, landscapeTop + landscapeHeight);
     context.bezierCurveTo(width * 0.48, landscapeTop + 270, width * 0.56, landscapeTop + 190, width * 0.58, landscapeTop + 110);
     context.fill();
+
+    if (ecosystem.quality === "critical") {
+      context.strokeStyle = "#4f392b";
+      context.lineWidth = 5;
+      for (let index = 0; index < 7; index += 1) {
+        const crackX = 130 + index * 125;
+        const crackY = landscapeTop + 300 + (index % 2) * 28;
+        context.beginPath();
+        context.moveTo(crackX, crackY);
+        context.lineTo(crackX + 28, crackY + 20);
+        context.lineTo(crackX + 10, crackY + 45);
+        context.stroke();
+      }
+    }
+
+    for (let index = 0; index < ecosystem.trees; index += 1) {
+      const treeX = 130 + (index % 5) * 92 + (index >= 5 ? 28 : 0);
+      const treeY = landscapeTop + 310 - (index % 2) * 18;
+      context.fillStyle = "#684329";
+      context.fillRect(treeX - 7, treeY - 66, 14, 70);
+      context.fillStyle = index % 2 ? "#3f7f48" : "#4f914f";
+      context.beginPath();
+      context.arc(treeX, treeY - 78, 35, 0, Math.PI * 2);
+      context.fill();
+    }
+
+    context.strokeStyle = "#5a3e2b";
+    context.lineWidth = 8;
+    for (let index = 0; index < ecosystem.dryTrees; index += 1) {
+      const treeX = 145 + index * 112;
+      const treeY = landscapeTop + 330;
+      context.beginPath();
+      context.moveTo(treeX, treeY);
+      context.lineTo(treeX, treeY - 76);
+      context.lineTo(treeX - 24, treeY - 103);
+      context.moveTo(treeX, treeY - 72);
+      context.lineTo(treeX + 27, treeY - 96);
+      context.stroke();
+    }
+
+    context.fillStyle = "#275f73";
+    for (let index = 0; index < ecosystem.fish; index += 1) {
+      const fishX = width * 0.56 + (index % 3) * 30;
+      const fishY = landscapeTop + 205 + Math.floor(index / 3) * 35;
+      context.beginPath();
+      context.ellipse(fishX, fishY, 13, 6, -0.2, 0, Math.PI * 2);
+      context.fill();
+      context.beginPath();
+      context.moveTo(fishX - 12, fishY);
+      context.lineTo(fishX - 24, fishY - 9);
+      context.lineTo(fishX - 24, fishY + 9);
+      context.closePath();
+      context.fill();
+    }
+
+    for (let index = 0; index < ecosystem.energy; index += 1) {
+      const panelX = 820 + (index % 3) * 82;
+      const panelY = landscapeTop + 260 + Math.floor(index / 3) * 58;
+      context.fillStyle = "#31576f";
+      context.fillRect(panelX, panelY, 58, 34);
+      context.strokeStyle = "#b8d5db";
+      context.lineWidth = 2;
+      context.strokeRect(panelX, panelY, 58, 34);
+    }
+
+    context.strokeStyle = ecosystem.food > 0 ? "#d7b456" : "#74523b";
+    context.lineWidth = 5;
+    for (let index = 0; index < ecosystem.food; index += 1) {
+      const cropX = 760 + index * 42;
+      context.beginPath();
+      context.moveTo(cropX, landscapeTop + 360);
+      context.lineTo(cropX, landscapeTop + 320 - (index % 2) * 12);
+      context.stroke();
+    }
+
+    context.fillStyle = "rgba(31, 36, 28, 0.78)";
+    context.fillRect(96, landscapeTop + 18, 280, 46);
+    context.fillStyle = "#ffffff";
+    context.font = "700 19px Arial";
+    context.fillText(`CENÁRIO: ${currentScenarioReadings.focus.toUpperCase()}`, 114, landscapeTop + 48);
+    context.restore();
 
     const contentTop = landscapeTop + landscapeHeight + 55;
     context.fillStyle = "#202018";
@@ -1058,128 +1296,6 @@
     } catch (error) {
       stopBlowDetection();
       blowStatus.textContent = "Permissão de microfone não concedida. Use Plantar sem microfone.";
-    }
-  }
-
-  function setMotionValues(x, y) {
-    const safeX = Math.max(-24, Math.min(24, Number(x) || 0));
-    const safeY = Math.max(-24, Math.min(24, Number(y) || 0));
-    body.style.setProperty("--motion-x", String(safeX));
-    body.style.setProperty("--motion-y", String(safeY));
-    if (spatialEnabled) {
-      setSpatialPan(safeX / 24);
-    }
-  }
-
-  function handleDeviceMotion(event) {
-    if (!motionEnabled) return;
-    setMotionValues((event.gamma || 0) * 0.7, (event.beta || 0) * 0.35);
-  }
-
-  async function toggleMotionExperience() {
-    if (motionEnabled) {
-      motionEnabled = false;
-      window.removeEventListener("deviceorientation", handleDeviceMotion);
-      setMotionValues(0, 0);
-      motionToggleButton.textContent = "Ativar movimento";
-      motionToggleButton.setAttribute("aria-pressed", "false");
-      motionStatus.textContent = "Movimento desativado. O cursor continua funcionando no computador.";
-      return;
-    }
-
-    try {
-      if (typeof DeviceOrientationEvent !== "undefined" && typeof DeviceOrientationEvent.requestPermission === "function") {
-        const permission = await DeviceOrientationEvent.requestPermission();
-        if (permission !== "granted") throw new Error("permission-denied");
-      }
-      if (typeof DeviceOrientationEvent === "undefined") {
-        motionStatus.textContent = "Sensor indisponível neste aparelho. Use o cursor para mover a paisagem.";
-        return;
-      }
-      motionEnabled = true;
-      window.addEventListener("deviceorientation", handleDeviceMotion);
-      motionToggleButton.textContent = "Desativar movimento";
-      motionToggleButton.setAttribute("aria-pressed", "true");
-      motionStatus.textContent = "Movimento ativo. Incline o aparelho com suavidade.";
-      completeJourneyMilestone("motion");
-    } catch (error) {
-      motionStatus.textContent = "Movimento não autorizado. A experiência pelo cursor continua disponível.";
-    }
-  }
-
-  function setSpatialPan(value) {
-    const pan = Math.max(-1, Math.min(1, Number(value) || 0));
-    if (spatialPannerNode) {
-      spatialPannerNode.pan.setTargetAtTime(pan, spatialAudioContext.currentTime, 0.04);
-    }
-    spatialPanDot.style.left = `${50 + pan * 38}%`;
-    spatialStatus.textContent = pan < -0.25 ? "O som se aproxima pelo lado esquerdo." : pan > 0.25 ? "O som se aproxima pelo lado direito." : "O som está centralizado ao seu redor.";
-  }
-
-  async function toggleSpatialAudio() {
-    if (spatialEnabled && spatialNeedsGesture) {
-      try {
-        if (spatialAudioContext) await spatialAudioContext.resume();
-        await spatialNatureAudio.play();
-      } catch (error) {
-        spatialStatus.textContent = "O navegador ainda bloqueou o som. Toque novamente para tentar.";
-      }
-      return;
-    }
-
-    if (spatialEnabled) {
-      spatialEnabled = false;
-      spatialNeedsGesture = false;
-      spatialNatureAudio.pause();
-      if (spatialPannerNode) spatialPannerNode.pan.value = 0;
-      spatialAudioButton.textContent = "Ativar som espacial";
-      spatialAudioButton.setAttribute("aria-pressed", "false");
-      setSpatialPan(0);
-      spatialStatus.textContent = "Som espacial desativado.";
-      return;
-    }
-
-    const AudioContextConstructor = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextConstructor) {
-      spatialStatus.textContent = "Áudio espacial não está disponível neste navegador.";
-      return;
-    }
-
-    try {
-      if (!spatialAudioContext) {
-        spatialAudioContext = new AudioContextConstructor();
-        spatialSourceNode = spatialAudioContext.createMediaElementSource(spatialNatureAudio);
-        if (spatialAudioContext.createStereoPanner) {
-          spatialPannerNode = spatialAudioContext.createStereoPanner();
-          spatialSourceNode.connect(spatialPannerNode).connect(spatialAudioContext.destination);
-        } else {
-          spatialSourceNode.connect(spatialAudioContext.destination);
-        }
-      }
-      spatialEnabled = true;
-      spatialNeedsGesture = false;
-      spatialAudioButton.textContent = "Desativar som espacial";
-      spatialAudioButton.setAttribute("aria-pressed", "true");
-      spatialStatus.textContent = "Som espacial ativo. Mova o cursor ou incline o aparelho.";
-      completeJourneyMilestone("spatial");
-      await Promise.race([
-        spatialAudioContext.resume(),
-        new Promise((resolve) => window.setTimeout(resolve, 600)),
-      ]);
-      try {
-        await spatialNatureAudio.play();
-      } catch (error) {
-        spatialNeedsGesture = true;
-        spatialAudioButton.textContent = "Tocar som espacial";
-        spatialStatus.textContent = "Som preparado. Toque em Tocar som espacial para liberar a reprodução.";
-        return;
-      }
-      setSpatialPan(0);
-    } catch (error) {
-      spatialEnabled = false;
-      spatialAudioButton.textContent = "Ativar som espacial";
-      spatialAudioButton.setAttribute("aria-pressed", "false");
-      spatialStatus.textContent = "Não foi possível iniciar o som agora. Toque novamente ou ative Natureza nos atalhos.";
     }
   }
 
@@ -1517,6 +1633,8 @@
     currentScenarioReadings.city = finalCity;
     currentScenarioReadings.score = finalScore;
     currentScenarioReadings.focus = focus;
+    currentScenarioReadings.strategies = [...selectedStrategies];
+    currentScenarioReadings.intensity = intensity;
     renderZoneProfile(activeZone, false);
     renderTwoFutures();
     renderSeedCompanion();
@@ -2416,6 +2534,21 @@
   quickReaderButton.addEventListener("click", readPageSummary);
   readerStopButton.addEventListener("click", stopPageSummary);
   quickReaderStopButton.addEventListener("click", stopPageSummary);
+  summaryAudio.addEventListener("play", function () {
+    readingSummary = true;
+    readerStatus.textContent = "Resumo em leitura. Você pode continuar navegando pelo site.";
+    updateQuickDockState();
+  });
+  summaryAudio.addEventListener("ended", function () {
+    readingSummary = false;
+    readerStatus.textContent = "Leitura finalizada.";
+    updateQuickDockState();
+  });
+  summaryAudio.addEventListener("error", function () {
+    readingSummary = false;
+    readerStatus.textContent = "Arquivo do resumo não encontrado.";
+    updateQuickDockState();
+  });
   readingModeButton.addEventListener("click", function () {
     applyReadingMode(!body.classList.contains("reading-mode"));
   });
@@ -2501,18 +2634,11 @@
   plantFallbackButton.addEventListener("click", function () {
     scatterSeeds("button");
   });
-  motionToggleButton.addEventListener("click", toggleMotionExperience);
-  spatialAudioButton.addEventListener("click", toggleSpatialAudio);
-  spatialNatureAudio.addEventListener("play", function () {
-    spatialEnabled = true;
-    spatialNeedsGesture = false;
-    spatialAudioButton.textContent = "Desativar som espacial";
-    spatialAudioButton.setAttribute("aria-pressed", "true");
-    setSpatialPan(0);
-    completeJourneyMilestone("spatial");
+  seedCompanionButton.addEventListener("click", function () {
+    setSeedCompanionExpanded(!seedCompanion.classList.contains("is-expanded"));
   });
-  spatialNatureAudio.addEventListener("error", function () {
-    spatialStatus.textContent = "Arquivo do bosque não encontrado. Verifique musica/bosque.mp3.";
+  seedCompanionDetails.querySelector("a").addEventListener("click", function () {
+    setSeedCompanionExpanded(false);
   });
   refreshNewspaperButton.addEventListener("click", function () {
     renderFutureNewspaper();
@@ -2523,13 +2649,9 @@
 
   window.addEventListener("scroll", updateLivingRoots, { passive: true });
   window.addEventListener("resize", updateLivingRoots);
-  document.addEventListener("pointermove", function (event) {
-    if (motionEnabled) return;
-    const x = ((event.clientX / Math.max(1, window.innerWidth)) - 0.5) * 34;
-    const y = ((event.clientY / Math.max(1, window.innerHeight)) - 0.5) * 24;
-    setMotionValues(x, y);
-    if (spatialEnabled) setSpatialPan(x / 17);
-  }, { passive: true });
+  document.addEventListener("pointerdown", function (event) {
+    if (!seedCompanion.contains(event.target)) setSeedCompanionExpanded(false);
+  });
 
   if ("IntersectionObserver" in window) {
     const dataJourneyObserver = new IntersectionObserver(
@@ -2567,6 +2689,11 @@
   quizRestartButton.addEventListener("click", startQuizSession);
 
   document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && seedCompanion.classList.contains("is-expanded")) {
+      setSeedCompanionExpanded(false);
+      seedCompanionButton.focus();
+    }
+
     if (body.classList.contains("tour-active")) {
       if (event.key === "Escape") {
         event.preventDefault();
@@ -2626,7 +2753,6 @@
   themeAudio.volume = Number(audioVolumeRange.value) / 100;
   ambientAudio.src = getCurrentAmbientMode().src;
   ambientAudio.volume = Number(ambientVolumeRange.value) / 100;
-  spatialNatureAudio.volume = 0.35;
   renderAchievements();
   updateQuickDockState();
   renderTimeline(activeTimeline);

@@ -180,7 +180,8 @@
     hidden
     inert
   >
-    <audio id="tourAudio" preload="metadata"></audio>
+  <audio id="tourAudio" preload="metadata"></audio>
+  <audio id="summaryAudio" src="musica/ler resumo pronto.m4a" preload="metadata"></audio>
 
     <button id="tourCloseButton" class="tour-close" type="button" aria-label="Fechar apresentação guiada">
       Fechar
@@ -228,7 +229,7 @@
 
   <!-- Semente Viva: resume o progresso da jornada e muda conforme as escolhas do simulador. -->
   <aside id="seedCompanion" class="seed-companion" data-stage="0" data-variant="solo" aria-label="Progresso da Semente Viva">
-    <a class="seed-companion-link" href="#laboratorio-vivo" aria-label="Abrir laboratório da Semente Viva">
+    <button id="seedCompanionButton" class="seed-companion-button" type="button" aria-expanded="false" aria-controls="seedCompanionDetails" aria-label="Ver progresso da Semente Viva">
       <span class="seed-pot" aria-hidden="true">
         <span class="seed-soil"></span>
         <span class="living-seed"></span>
@@ -238,13 +239,14 @@
         <span class="living-leaf living-leaf-top"></span>
         <span class="living-bloom"><i></i></span>
       </span>
-      <span class="seed-copy">
-        <small>Semente Viva</small>
-        <strong id="seedStageLabel">Semente adormecida</strong>
-        <span class="seed-progress" aria-hidden="true"><i id="seedProgressFill"></i></span>
-        <span id="seedProgressText">0 de 7 experiências</span>
-      </span>
-    </a>
+    </button>
+    <div id="seedCompanionDetails" class="seed-copy" aria-hidden="true">
+      <small>Semente Viva</small>
+      <strong id="seedStageLabel">Semente adormecida</strong>
+      <span class="seed-progress" aria-hidden="true"><i id="seedProgressFill"></i></span>
+      <span id="seedProgressText">0 de 5 experiências</span>
+      <a class="seed-details-link" href="#laboratorio-vivo">Abrir plantio</a>
+    </div>
   </aside>
 
   <!-- Estrutura principal: reune cabecalho, secoes educativas e footer do projeto. -->
@@ -522,14 +524,14 @@
         </div>
       </section>
 
-      <!-- Laboratorio vivo: plantio por sopro, movimento do aparelho e som espacial. -->
+      <!-- Laboratorio vivo: plantio por sopro com alternativa acessivel. -->
       <section class="section living-lab-section" id="laboratorio-vivo" data-reveal>
         <div class="section-heading">
           <p class="eyebrow">Laboratório vivo</p>
-          <h2>Faça o site reagir ao seu corpo e às suas escolhas.</h2>
+          <h2>Assopre e veja uma nova paisagem nascer.</h2>
           <p>
-            Plante pelo sopro, incline o celular e mova os sons da natureza. Todos os recursos
-            possuem controles alternativos e só usam sensores quando você permite.
+            O microfone transforma a intensidade do sopro em sementes pela tela. Para quem preferir,
+            o botão alternativo oferece a mesma experiência sem solicitar permissão.
           </p>
         </div>
 
@@ -553,49 +555,6 @@
               <button id="plantFallbackButton" class="button button-outline" type="button">Plantar sem microfone</button>
             </div>
             <p id="blowStatus" class="lab-status" aria-live="polite">Pronto para receber novas sementes.</p>
-          </article>
-
-          <article class="panel lab-card motion-card">
-            <div class="lab-card-head">
-              <span class="lab-number">02</span>
-              <div>
-                <h3>Experiência pelo movimento</h3>
-                <p>Incline o celular para deslocar nuvens, água, folhas e sementes pela paisagem.</p>
-              </div>
-            </div>
-            <div class="motion-preview" aria-hidden="true">
-              <span class="motion-sun"></span>
-              <span class="motion-cloud motion-cloud-a"></span>
-              <span class="motion-cloud motion-cloud-b"></span>
-              <span class="motion-hill"></span>
-              <span class="motion-drop"></span>
-              <span class="motion-seed"></span>
-            </div>
-            <button id="motionToggleButton" class="button button-soft full-width" type="button" aria-pressed="false">
-              Ativar movimento
-            </button>
-            <p id="motionStatus" class="lab-status" aria-live="polite">No computador, mova o cursor para experimentar.</p>
-          </article>
-
-          <article class="panel lab-card spatial-card">
-            <audio id="spatialNatureAudio" src="musica/bosque.mp3" loop preload="metadata"></audio>
-            <div class="lab-card-head">
-              <span class="lab-number">03</span>
-              <div>
-                <h3>Natureza em som espacial</h3>
-                <p>O bosque acompanha o cursor ou a inclinação, como se pássaros e água estivessem ao redor.</p>
-              </div>
-            </div>
-            <div class="spatial-visual" aria-hidden="true">
-              <span class="spatial-listener"></span>
-              <span class="spatial-wave wave-left"></span>
-              <span class="spatial-wave wave-right"></span>
-              <span id="spatialPanDot" class="spatial-pan-dot"></span>
-            </div>
-            <button id="spatialAudioButton" class="button button-soft full-width" type="button" aria-pressed="false">
-              Ativar som espacial
-            </button>
-            <p id="spatialStatus" class="lab-status" aria-live="polite">Use fones de ouvido para perceber melhor o movimento.</p>
           </article>
         </div>
       </section>
@@ -770,7 +729,11 @@
           <div class="future-world future-world-balanced" aria-hidden="true">
             <span class="future-sky"></span><span class="future-sun"></span><span class="future-cloud"></span>
             <span class="future-hill"></span><span class="future-river"></span><span class="future-field"></span>
-            <span class="future-city"></span><span class="future-tree tree-a"></span><span class="future-tree tree-b"></span>
+            <span class="future-city"></span>
+            <span id="futureTreeLayer" class="future-tree-layer"></span>
+            <span id="futureFishLayer" class="future-fish-layer"></span>
+            <span id="futureEnergyLayer" class="future-energy-layer"></span>
+            <span id="futureFoodLayer" class="future-food-layer"></span>
             <strong>Futuro regenerado</strong>
           </div>
           <span class="future-divider" aria-hidden="true"><i></i></span>
@@ -781,6 +744,12 @@
           <span>Cenário atual</span>
           <strong id="futureScenarioTitle">Transição promissora</strong>
           <p id="futureScenarioText">As escolhas atuais já recuperam parte da paisagem, mas ainda podem avançar.</p>
+        </div>
+        <div class="future-ecosystem-stats" aria-live="polite">
+          <span>Árvores vivas <strong id="futureTreeCount">0</strong>/10</span>
+          <span>Peixes no rio <strong id="futureFishCount">0</strong>/10</span>
+          <span>Energia limpa <strong id="futureEnergyCount">0</strong>/6</span>
+          <span>Colheita saudável <strong id="futureFoodCount">0</strong>/8</span>
         </div>
       </section>
 
@@ -1230,6 +1199,11 @@
                 <span class="newspaper-sun"></span><span class="newspaper-hill"></span>
                 <span class="newspaper-river"></span><span class="newspaper-plant"></span>
                 <span class="newspaper-city"></span>
+                <span id="newspaperTreeLayer" class="newspaper-tree-layer"></span>
+                <span id="newspaperFishLayer" class="newspaper-fish-layer"></span>
+                <span id="newspaperEnergyLayer" class="newspaper-energy-layer"></span>
+                <span id="newspaperCropLayer" class="newspaper-crop-layer"></span>
+                <span class="newspaper-cracks"></span>
               </div>
               <div class="newspaper-columns">
                 <div>
